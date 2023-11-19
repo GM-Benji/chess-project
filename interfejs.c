@@ -57,6 +57,8 @@ int main()
         printf("\n move (np. g8-f6) >> ");
         scanf("%s", takeMove);
 
+        //convMove chyba do innego pliku sie da, na ten moment nie wiem gdzie bedzie najlepiej
+
         //tu beda wszyskie funkcje dzialjace pokolei w trakcie gry
     }
     if(gameOver(board) == 1) //win
