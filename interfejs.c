@@ -18,7 +18,7 @@ void drawBoard(char board[8][8])
     for(int i=0; i < 8; i++)
     {
         printf(" +---+---+---+---+---+---+---+---+\n");
-        printf("%d",i+1);
+        printf("%d", 8-i);
         for(int j=0; j<8; j++)
         {
             if(j!=0)
@@ -43,7 +43,7 @@ int gameOver(char board[8][8]) //do zrobienia w innym pliku bo z tego beda korzy
 
 int main()
 {
-    while(gameOver(board) != 0) //tu będzie funkcja potrzebna funkcja ktora sprawdza czy jest koniec gry / można przyjąć że 0 to gra w toku, 1 to win, 2 to lose, 3 pat/draw
+    while(gameOver(board) != 0) //tu bêdzie funkcja potrzebna funkcja ktora sprawdza czy jest koniec gry / mo¿na przyj¹æ ¿e 0 to gra w toku, 1 to win, 2 to lose, 3 pat/draw
     {
         drawBoard(board);
         char ruch[5];
