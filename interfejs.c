@@ -41,14 +41,21 @@ int gameOver(char board[8][8]) //do zrobienia w innym pliku bo z tego beda korzy
     return 1;
 }
 
+/*
+char convMove(char takeMove)
+{
+    for( char kolumny[8] = {'a','b','c','d','e','f','g','h'}, int i=0; takeMove[0] != kolumny[i]; i++)
+
+}*/
+
 int main()
 {
     while(gameOver(board) != 0) //tu bêdzie funkcja potrzebna funkcja ktora sprawdza czy jest koniec gry / mo¿na przyj¹æ ¿e 0 to gra w toku, 1 to win, 2 to lose, 3 pat/draw
     {
         drawBoard(board);
-        char ruch[5];
-        printf("\n ruch (np. g8-f6) >> ");
-        scanf("%s", ruch);
+        char takeMove[5];
+        printf("\n move (np. g8-f6) >> ");
+        scanf("%s", takeMove);
 
         //tu beda wszyskie funkcje dzialjace pokolei w trakcie gry
     }
