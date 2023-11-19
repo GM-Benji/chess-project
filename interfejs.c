@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdio.h> 
 #include <stdlib.h>
 
 #include "funkcje.c"
@@ -46,7 +46,7 @@ int gameOver(char board[8][8]) //do zrobienia w innym pliku bo z tego beda korzy
     return 0;
 }
 
-void playersMove()
+void playersMove() //trzeba jeszcze dorobić żeby pobierało z info z funkcji sprawdzającej czy ruch jest możliwy do wykonania
 {
     char kolumny[8] = {'a','b','c','d','e','f','g','h'}; //tablice pomocnicze do porownania z inputem
     char wiersze[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
