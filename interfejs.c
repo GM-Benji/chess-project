@@ -57,7 +57,7 @@ int main()
     else if(gameOver(board) == 2) //lose
         printf("black wins");
     else if(gameOver(board) == 3)
-        printf("pat / draw");
+        printf("pat / draw"); //draw
 
     return 0;
 }
