@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "funkcje.c"
+#include "inicjalizacja-ruchow.c"
+#include "lista.c"
+#include "ocena-pozycji.c"
+
 //starting board arrangement
 char board[8][8] = {
     { 'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' },
@@ -38,29 +43,86 @@ void drawBoard(char board[8][8])
 
 int gameOver(char board[8][8]) //do zrobienia w innym pliku bo z tego beda korzystac inne funkcje
 {
-    return 1;
+    return 0;
 }
 
-/*
-char convMove(char takeMove)
+void playersMove()
 {
-    for( char kolumny[8] = {'a','b','c','d','e','f','g','h'}, int i=0; takeMove[0] != kolumny[i]; i++)
+    char kolumny[8] = {'a','b','c','d','e','f','g','h'}; //tablice pomocnicze do porownania z inputem
+    char wiersze[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
 
-}*/
+    move conv; //na to skonwertowane
+    conv.pos1 = NULL;
+    conv.pos2 = NULL;
+
+    printf("    it's your turn to make a move\n");
+
+    int isInputOk; //zmienna ktora pomoga sprawdzic czy input jest poprawnie wpisany
+    do
+    {
+        char takeMove[5];
+        printf("(np. g8-f6) >> ");
+        scanf("%s", takeMove);
+
+        int isOkey0=0;
+        int isOkey1=0;
+        int isOkey3=0;
+        int isOkey4=0;
+
+        for(int i=0; i<8 && (isOkey0 == 0 || isOkey1 == 0 || isOkey3 == 0 || isOkey4 == 0); i++) //petla leci po calej kolumny i wiersze oraz jezeli wszystko zostalo przekonwertowane poprawnie to wszyskie isOkey zmieniaja sie na 1
+        {
+            if(takeMove[0] == kolumny[i])
+            {
+                conv.pos1 += i;
+                isOkey0=1;
+            }
+            if(takeMove[1] == wiersze[i])
+            {
+                conv.pos1 += i*8;
+                isOkey1=1;
+            }
+            if(takeMove[3] == kolumny[i])
+            {
+                conv.pos2 += i;
+                isOkey3=1;
+            }
+            if(takeMove[4] == wiersze[i])
+            {
+                conv.pos2 += i*8;
+                isOkey4=1;
+            }
+        }
+
+        if(isOkey0 == 0 || isOkey1 == 0 || isOkey3 == 0 || isOkey4 == 0) // jezeli cos nie zostalo zmienione to cos zostalo zle wpisane
+        {
+            printf("invalid input notation\n");
+            isInputOk = 0;
+        }
+        else // jezeli zostalo wpisane dobrze to wypisuje ze teraz sie dzieje analiza planszy, zmienia isInputOk i nie robi petli jeszcze raz
+        {
+            printf("pricessing the move..\n");
+            isInputOk = 1;
+        }
+
+        //printf("%d | %d\n", conv.pos1, conv.pos2);
+    } while(isInputOk == 0); // jezeli cos nie zostalo zmienione to powtarza wpisywanie
+}
 
 int main()
 {
-    while(gameOver(board) != 0) //tu bêdzie funkcja potrzebna funkcja ktora sprawdza czy jest koniec gry / mo¿na przyj¹æ ¿e 0 to gra w toku, 1 to win, 2 to lose, 3 pat/draw
+    for(int i=0; i<8; i++) //sprawdzacz - to jest niepotrzebne później
+    {
+        for(int j=0; j<8; j++)
+            printf(" %2d", i*8+j);
+        printf("\n");
+    }
+
+    while(gameOver(board)==0)
     {
         drawBoard(board);
-        char takeMove[5];
-        printf("\n move (np. g8-f6) >> ");
-        scanf("%s", takeMove);
-
-        //convMove chyba do innego pliku sie da, na ten moment nie wiem gdzie bedzie najlepiej
-
-        //tu beda wszyskie funkcje dzialjace pokolei w trakcie gry
+        playersMove();
     }
+
     if(gameOver(board) == 1) //win
         printf("white wins");
     else if(gameOver(board) == 2) //lose
