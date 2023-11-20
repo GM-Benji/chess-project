@@ -7,6 +7,6 @@ int digi(int x, int i)//zwraca pierwszą współrzędną dla i=0 i drugą dla i=
 }
 char brd(int x, char board[8][8])
 {
-	if(x>77||x<0)return '';
+	if(x>77||x<0)return ' ';
 	return board[digi(x,0)][digi(x,1)];
 }
