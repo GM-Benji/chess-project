@@ -63,6 +63,8 @@ int isWay(char *str)
 	str++;
 	while(*str!=NULL)
 	{
+		if(*(++str)==NULL)return 1;
+		str--;
 		if(*str!='#')return 0;
 		str++;
 	}
