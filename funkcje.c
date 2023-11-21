@@ -14,15 +14,18 @@ char brd(int x, char board[8][8])
 char *substr(move x,char board[8][8])
 {
 	int temp=abs(digi(x.pos1,0)-digi(x.pos2,0));//przesuniecie na wierszach
-	if(abs(digi(x.pos1,1)-digi(x.pos2,1))>temp) temp=abs(digi(x.pos1,0)-digi(x.pos2,0));//przesuniecie na kolumnach
+	if(abs(digi(x.pos1,1)-digi(x.pos2,1))>temp)temp=abs(digi(x.pos1,1)-digi(x.pos2,1));//przesuniecie na kolumnach
 	char *str=calloc(8,sizeof(char));
+	
 	if(digi(x.pos1,0)==digi(x.pos2,0))//ruch w ramach jednego wiersza
 	{
+		
 		int pos=x.pos1;
 		if(digi(x.pos1,1)>digi(x.pos2,1))pos=x.pos2;
 		for(int i=0;i<temp;i++)
 		{
 			*str=brd(pos+i,board);
+			
 			str++;
 		}
 		str-=temp;
