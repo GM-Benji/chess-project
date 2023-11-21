@@ -99,7 +99,7 @@ move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawd
         else if(isLane(char substr(move x,char board[8][8]))) // tu musi być warunek ze jezeli ruch jest niemozliwy bo gracz jest szacha albo po drodze ruchu coś stoi
         {
             printf("You cant make this move\n");
-            isInputOkq = 0;
+            isInputOk = 0;
         }*/
         else // jezeli zostalo wpisane dobrze to wypisuje ze teraz sie dzieje analiza planszy, zmienia isInputOk i nie robi petli jeszcze raz
         {
