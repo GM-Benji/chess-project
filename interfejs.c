@@ -8,14 +8,14 @@
 
 //starting board arrangement
 char board[8][8] = {
-    { 'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' },
-    { 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P' },
-    { '#', '#', '#', '#', '#', '#', '#', '#' },
-    { '#', '#', '#', '#', '#', '#', '#', '#' },
-    { '#', '#', '#', '#', '#', '#', '#', '#' },
-    { '#', '#', '#', '#', '#', '#', '#', '#' },
+    { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' },
     { 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p' },
-    { 'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r' }
+    { '#', '#', '#', '#', '#', '#', '#', '#' },
+    { '#', '#', '#', '#', '#', '#', '#', '#' },
+    { '#', '#', '#', '#', '#', '#', '#', '#' },
+    { '#', '#', '#', '#', '#', '#', '#', '#' },
+    { 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P' },
+    { 'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R' }
 };
 
 void drawBoard(char board[8][8])
@@ -46,7 +46,7 @@ int gameOver(char board[8][8]) //do zrobienia w innym pliku bo z tego beda korzy
     return 0;
 }
 
-void playersMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawdzającej czy ruch jest możliwy do wykonania
+move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawdzającej czy ruch jest możliwy do wykonania
 {
     char kolumny[8] = {'a','b','c','d','e','f','g','h'}; //tablice pomocnicze do porownania z inputem
     char wiersze[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
@@ -106,6 +106,8 @@ void playersMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji spr
 
         //printf("%d | %d\n", conv.pos1, conv.pos2);
     } while(isInputOk == 0); // jezeli cos nie zostalo zmienione to powtarza wpisywanie
+
+    return conv;
 }
 
 int main()
@@ -116,11 +118,11 @@ int main()
             printf(" %2d", i*8+j);
         printf("\n");
     }
-
+    
     while(gameOver(board)==0)
     {
         drawBoard(board);
-        playersMove();
+        move  playersMove = typeMove();
     }
 
     if(gameOver(board) == 1) //win
