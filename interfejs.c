@@ -64,10 +64,7 @@ move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawd
         printf("(np. g8-f6) >> ");
         scanf("%s", takeMove);
 
-        int isOkey0=0;
-        int isOkey1=0;
-        int isOkey3=0;
-        int isOkey4=0;
+        int isOkey0=0, isOkey1=0, isOkey3=0, isOkey4=0;
 
         for(int i=0; i<8 && (isOkey0 == 0 || isOkey1 == 0 || isOkey3 == 0 || isOkey4 == 0); i++) //petla leci po calej kolumny i wiersze oraz jezeli wszystko zostalo przekonwertowane poprawnie to wszyskie isOkey zmieniaja sie na 1
         {
@@ -98,6 +95,12 @@ move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawd
             printf("invalid input notation\n");
             isInputOk = 0;
         }
+        /*
+        else if(isLane(char substr(move x,char board[8][8]))) // tu musi być warunek ze jezeli ruch jest niemozliwy bo gracz jest szacha albo po drodze ruchu coś stoi
+        {
+            printf("You cant make this move\n");
+            isInputOkq = 0;
+        }*/
         else // jezeli zostalo wpisane dobrze to wypisuje ze teraz sie dzieje analiza planszy, zmienia isInputOk i nie robi petli jeszcze raz
         {
             printf("pricessing the move..\n");
@@ -118,11 +121,11 @@ int main()
             printf(" %2d", i*8+j);
         printf("\n");
     }
-    
+
     while(gameOver(board)==0)
     {
         drawBoard(board);
-        move  playersMove = typeMove();
+        move playersMove = typeMove();
     }
 
     if(gameOver(board) == 1) //win
