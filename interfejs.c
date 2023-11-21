@@ -1,4 +1,4 @@
-#include <stdio.h> 
+#include <stdio.h> // czy szach, czy jest cos pomiedzy to do // potem roszady bicie przelot, ruch pionka o dwa pola
 #include <stdlib.h>
 
 #include "funkcje.c"
