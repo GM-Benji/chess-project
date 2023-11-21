@@ -28,7 +28,7 @@ char *substr(move x,char board[8][8])
 			
 			str++;
 		}
-		str-=temp;
+		str-=temp+1;
 		return str;
 	}
 	if(digi(x.pos1,1)==digi(x.pos2,1))//ruch w ramach jednej kolumny
@@ -40,7 +40,7 @@ char *substr(move x,char board[8][8])
 			*str=brd(pos+i*10,board);
 			str++;
 		}
-		str-=temp;
+		str-=temp+1;
 		return str;
 	}
 	if(digi(x.pos1,1)!=digi(x.pos2,1) && digi(x.pos1,0)!=digi(x.pos2,0))//ruch po diagonali
@@ -52,7 +52,7 @@ char *substr(move x,char board[8][8])
 			*str=brd(pos+i*10+i,board);
 			str++;
 		}
-		str-=temp;
+		str-=temp+1;
 		return str;
 	}
 
