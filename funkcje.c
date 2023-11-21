@@ -58,7 +58,16 @@ char *substr(move x,char board[8][8])
 
 	return str;
 }
-
+int isWay(char *str)
+{
+	str++;
+	while(*str!=NULL)
+	{
+		if(*str!='#')return 0;
+		str++;
+	}
+	return 1;
+}
 #include <string.h>
 int isLane(char *str)
 {
