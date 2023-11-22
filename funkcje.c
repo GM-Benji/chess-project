@@ -96,7 +96,7 @@ int isLane(char *str)
     }
     return 1;
 }
-int isCheck(char board[8][8],int color)
+int isCheck(char board[8][8],int color)//1- jest szach, 0- nie ma szacha
 {
 	int posK=0;
 	for(int i=0;i<8;i++)
@@ -106,6 +106,23 @@ int isCheck(char board[8][8],int color)
 			if(board[i][j]=='K' && color)posK=i*10+j;
 			if(board[i][j]=='k' && !color)posK=i*10+j;
 		}
+	}
+	//ruchy skoczka
+	int Nmoves[8]={-21,-19,-12,-8,8,12,19,21};
+	for(int i=0;i<8;i++)
+	{
+		if((posK+Nmoves[i]>=0 && posK+Nmoves[i]<=77) && (brd(posK+Nmoves[i],board)=='N' && !color))return 1;
+		if((posK+Nmoves[i]>=0 && posK+Nmoves[i]<=77) && (brd(posK+Nmoves[i],board)=='n' && color))return 1;
+	}
+	//ruchy pionkow
+	if(color)
+	{
+		if((posK-11>=0 && posK-11<=77) && brd(posK-11,board)=='p')return 1;
+		if((posK-9>=0 && posK-9<=77) && brd(posK-9,board)=='p')return 1;
+	}
+	else{
+		if((posK+11>=0 && posK+11<=77) && brd(posK+11,board)=='P')return 1;
+		if((posK+9>=0 && posK+9<=77) && brd(posK+9,board)=='P')return 1;
 	}
 	//ruchy proste
 	move x1={.pos1=digi(posK,0)*10,.pos2=posK};//od lewej do krola
@@ -134,30 +151,27 @@ int isCheck(char board[8][8],int color)
 		x7=(move){.pos1=(r2+2)*10+7,.pos2=posK};//od prawego gornego do krola
 		x8=(move){.pos1=posK,.pos2=72+r2};//od krola do lewego dolnego
 	}
-	char *str1=calloc(8,sizeof(char));
-	char *str2=calloc(8,sizeof(char));
-	char *str3=calloc(8,sizeof(char));
-	char *str4=calloc(8,sizeof(char));
-	char *str5=calloc(8,sizeof(char));
-	char *str6=calloc(8,sizeof(char));
-	char *str7=calloc(8,sizeof(char));
-	char *str8=calloc(8,sizeof(char));
-	str1=substr(x1,board);
-	str2=substr(x2,board);
-	str3=substr(x3,board);
-	str4=substr(x4,board);
-	str5=substr(x5,board);
-	str6=substr(x6,board);
-	str7=substr(x7,board);
-	str8=substr(x8,board);
-	printf("%s\n",str1);
-	printf("%s\n",str2);
-	printf("%s\n",str3);
-	printf("%s\n",str4);
-	printf("%s\n",str5);
-	printf("%s\n",str6);
-	printf("%s\n",str7);
-	printf("%s\n",str8);
+	move X[8]={x1,x2,x3,x4,x5,x6,x7,x8};
+	char *tempStr;
+	int d=0;//kierunek po liniach
+	for(int i=0;i<8;i++)
+	{
+		tempStr=calloc(8,sizeof(char));
+		tempStr=substr(X[i],board);
+		if(i>3)d=1;//kierunek po diagonalach
+		if(checkStrForCheck(tempStr,d)==1 && color)
+		{
+			free(tempStr);
+			return 1;
+		}
+		if(checkStrForCheck(tempStr,d)==-1 && !color)
+		{
+			free(tempStr);
+			return 1;
+		}
+	}
+	free(tempStr);
+	
 	return 0;
 }
 
