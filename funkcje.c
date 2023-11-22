@@ -79,3 +79,53 @@ int isLane(char *str)
     }
     return 1;
 }
+int isCheck(char board[8][8],int color)
+{
+	int posK=0;
+	for(int i=0;i<8;i++)
+	{
+		for(int j=0;j<8;j++)
+		{
+			if(board[i][j]=='K' && color)posK=i*10+j;
+			if(board[i][j]=='k' && !color)posK=i*10+j;
+		}
+	}
+	//ruchy proste
+	move x1={.pos1=digi(posK,0)*10,.pos2=posK};//od lewej do krola
+	move x2={.pos1=posK,.pos2=digi(posK,0)*10+7};//od krola do prawej
+	move x3={.pos1=digi(posK,1),.pos2=posK};//od góry do króla
+	move x4={.pos1=posK,.pos2=digi(posK,1)+70};//od krola do dolu
+	//ruchy diagonalne
+	int r=posK%11;
+	//powyzej albo na glownej diagonali
+	move x5={.pos1=r,.pos2=posK};//od lewego gornego do krola
+	move x6={.pos1=posK,.pos2=(7-r)*11+r};//od krola do prawgo dolnego
+	if(digi(posK,0)>digi(posK,1))//ponizej glownej diagonali
+	{
+		r-=11;
+		x5=(move){.pos1=abs(r*10),.pos2=posK};//od lewego gornego do krola
+		x6=(move){.pos1=posK,.pos2=77+r};//od krola do prawgo dolnego
+	}
+	
+	char *str1=calloc(8,sizeof(char));
+	char *str2=calloc(8,sizeof(char));
+	char *str3=calloc(8,sizeof(char));
+	char *str4=calloc(8,sizeof(char));
+	char *str5=calloc(8,sizeof(char));
+	char *str6=calloc(8,sizeof(char));
+	char *str7=calloc(8,sizeof(char));
+	char *str8=calloc(8,sizeof(char));
+	str1=substr(x1,board);
+	str2=substr(x2,board);
+	str3=substr(x3,board);
+	str4=substr(x4,board);
+	str5=substr(x5,board);
+	str6=substr(x6,board);
+	printf("%s\n",str1);
+	printf("%s\n",str2);
+	printf("%s\n",str3);
+	printf("%s\n",str4);
+	printf("%s\n",str5);
+	printf("%s\n",str6);
+	return 0;
+}
