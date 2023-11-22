@@ -114,16 +114,26 @@ int isCheck(char board[8][8],int color)
 	move x4={.pos1=posK,.pos2=digi(posK,1)+70};//od krola do dolu
 	//ruchy diagonalne
 	int r=posK%11;
-	//powyzej albo na glownej diagonali
+	//powyzej albo na glownej diagonali 0-77
 	move x5={.pos1=r,.pos2=posK};//od lewego gornego do krola
 	move x6={.pos1=posK,.pos2=(7-r)*11+r};//od krola do prawgo dolnego
-	if(digi(posK,0)>digi(posK,1))//ponizej glownej diagonali
+	if(digi(posK,0)>digi(posK,1))//ponizej glownej diagonali 0-77
 	{
 		r-=11;
 		x5=(move){.pos1=abs(r*10),.pos2=posK};//od lewego gornego do krola
 		x6=(move){.pos1=posK,.pos2=77+r};//od krola do prawgo dolnego
 	}
 	
+	//powyzej albo na glownej diagonali 7-70
+	int r2=posK%9;
+	move x7={.pos1=r2,.pos2=posK};//od prawego gornego do krola
+	move x8={.pos1=posK,.pos2=r2*10};//od krola do lewego dolnego
+	if((digi(posK,0)+digi(posK,1))>7)//ponizej glownej diagonali 7-70
+	{
+		if(r2==8)r2=-1;
+		x7=(move){.pos1=(r2+2)*10+7,.pos2=posK};//od prawego gornego do krola
+		x8=(move){.pos1=posK,.pos2=72+r2};//od krola do lewego dolnego
+	}
 	char *str1=calloc(8,sizeof(char));
 	char *str2=calloc(8,sizeof(char));
 	char *str3=calloc(8,sizeof(char));
@@ -138,12 +148,16 @@ int isCheck(char board[8][8],int color)
 	str4=substr(x4,board);
 	str5=substr(x5,board);
 	str6=substr(x6,board);
+	str7=substr(x7,board);
+	str8=substr(x8,board);
 	printf("%s\n",str1);
 	printf("%s\n",str2);
 	printf("%s\n",str3);
 	printf("%s\n",str4);
 	printf("%s\n",str5);
 	printf("%s\n",str6);
+	printf("%s\n",str7);
+	printf("%s\n",str8);
 	return 0;
 }
 
