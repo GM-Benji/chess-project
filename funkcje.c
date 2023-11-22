@@ -22,7 +22,7 @@ char *substr(move x,char board[8][8])
 		
 		int pos=x.pos1;
 		if(digi(x.pos1,1)>digi(x.pos2,1))pos=x.pos2;
-		for(int i=0;i<temp;i++)
+		for(int i=0;i<=temp;i++)
 		{
 			*str=brd(pos+i,board);
 			
@@ -35,7 +35,7 @@ char *substr(move x,char board[8][8])
 	{
 		int pos=x.pos1;
 		if(digi(x.pos1,0)>digi(x.pos2,0))pos=x.pos2;
-		for(int i=0;i<temp;i++)
+		for(int i=0;i<=temp;i++)
 		{
 			*str=brd(pos+i*10,board);
 			str++;
@@ -46,14 +46,31 @@ char *substr(move x,char board[8][8])
 	if(digi(x.pos1,1)!=digi(x.pos2,1) && digi(x.pos1,0)!=digi(x.pos2,0))//ruch po diagonali
 	{
 		int pos=x.pos1;
-		if(digi(x.pos1,0)>digi(x.pos2,0))pos=x.pos2;
-		for(int i=0;i<temp;i++)
+		int pos2=x.pos2;
+		if(digi(x.pos1,0)>digi(x.pos2,0))
 		{
-			*str=brd(pos+i*10+i,board);
-			str++;
+			pos=x.pos2;
+			pos2=x.pos1;
 		}
-		str-=temp+1;
-		return str;
+		if(digi(pos,1)<digi(pos2,1))//ruch od lewego gornego do prawego dolnego
+		{
+			for(int i=0;i<=temp;i++)
+			{
+				*str=brd(pos+i*10+i,board);
+				str++;
+			}
+			str-=temp+1;
+			return str;
+		}
+		else{//ruch od prawego gornego do lewego dolnego
+			for(int i=0;i<=temp;i++)
+			{
+				*str=brd(pos+i*10-i,board);
+				str++;
+			}
+			str-=temp+1;
+			return str;
+		}
 	}
 
 	return str;
