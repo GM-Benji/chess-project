@@ -134,7 +134,7 @@ int checkStrForCheck(char *strCheck, int direction) //(1 szach na bialym (-1 sza
 {
     int size = strlen(strCheck);
 
-    if(strCheck[size-1] == 'k' || strCheck[size-1] == 'K') //odwracanie stringa jezeli król nie jest na pierwszym msc
+    if(strCheck[size-1] == 'k' || strCheck[size-1] == 'K') //odwracanie stringa jezeli król nie jest na pierwszym msc tylko ostatnim
     {
         for(int i = 0, j = size-1; i < j ; i++, j--)
         {
