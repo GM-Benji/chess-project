@@ -207,6 +207,7 @@ int checkStrForCheck(char *strCheck, int direction) //(1 szach na bialym (-1 sza
             return 0;
         }
     }
+    return 0;
 }
 
 void moveMaker(char board[8][8], move thisMove) //funkcja to wykonania ruchu ze sprawdzaniem czy jest mozliwy NIEKOMPLETNA
