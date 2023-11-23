@@ -217,7 +217,7 @@ void moveMaker(char board[8][8], move thisMove) //funkcja to wykonania ruchu ze 
             char placedPiece = board[digi(thisMove.pos2, 0)][digi(thisMove.pos2, 1)];
             board[digi(thisMove.pos1, 0)][digi(thisMove.pos1, 1)] = '#';
 
-    if(placedPiece == 'P')
+    if(placedPiece == 'P') // dla gracza wraz z pobraniem wyboru figuty
     {
         char newPiece[1];
         int isOkey = 1;
