@@ -208,3 +208,33 @@ int checkStrForCheck(char *strCheck, int direction) //(1 szach na bialym (-1 sza
         }
     }
 }
+
+void moveMaker(char board[8][8], move thisMove) //funkcja to wykonania ruchu ze sprawdzaniem czy jest mozliwy NIEKOMPLETNA
+{
+    //if(isLegal(board, thisMove));
+
+            board[digi(thisMove.pos2, 0)][digi(thisMove.pos2, 1)] = board[digi(thisMove.pos1, 0)][digi(thisMove.pos1, 1)];
+            char placedPiece = board[digi(thisMove.pos2, 0)][digi(thisMove.pos2, 1)];
+            board[digi(thisMove.pos1, 0)][digi(thisMove.pos1, 1)] = '#';
+
+    if(placedPiece == 'P')
+    {
+        char newPiece[1];
+        int isOkey = 1;
+        do
+        {
+            printf("choose piece: Q/R/B/N\n");
+            scanf("%s", newPiece);
+            if(newPiece[0] == 'Q' || newPiece[0] == 'R' || newPiece[0] == 'B' || newPiece[0] == 'N')
+            {
+                isOkey=1;
+                board[digi(thisMove.pos2, 0)][digi(thisMove.pos2, 1)] = newPiece[0];
+            }
+            else
+            {
+                isOkey = 0;
+                printf("invalid new piece\n");
+            }
+        } while(isOkey == 0);
+    }
+}
