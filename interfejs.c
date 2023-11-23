@@ -75,7 +75,7 @@ move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawd
             }
             if(takeMove[1] == wiersze[i])
             {
-                conv.pos1 += i*8;
+                conv.pos1 += i*10;
                 isOkey1=1;
             }
             if(takeMove[3] == kolumny[i])
@@ -85,7 +85,7 @@ move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawd
             }
             if(takeMove[4] == wiersze[i])
             {
-                conv.pos2 += i*8;
+                conv.pos2 += i*10;
                 isOkey4=1;
             }
         }
@@ -109,6 +109,7 @@ move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawd
 
         //printf("%d | %d\n", conv.pos1, conv.pos2);
     } while(isInputOk == 0); // jezeli cos nie zostalo zmienione to powtarza wpisywanie
+    //printf("\n%d\n", isInputOk);
 
     return conv;
 }
@@ -118,7 +119,7 @@ int main()
     for(int i=0; i<8; i++) //sprawdzacz - to jest niepotrzebne później
     {
         for(int j=0; j<8; j++)
-            printf(" %2d", i*8+j);
+            printf(" %2d", i*10+j);
         printf("\n");
     }
 
