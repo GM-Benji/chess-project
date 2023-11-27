@@ -33,9 +33,11 @@ void zniszcz(element* head)
 	if(head->nastepny)zniszcz(head->nastepny);
 	free(head);
 }
-void show(element* head)
+void showL(element* head)
 {
-	if(!head)return;
-	printf("z %d na %d",head->ruch.pos1,head->ruch.pos2);
-	if(head->nastepny)show(head->nastepny);
+	while(head!=NULL)
+	{
+		printf("z %d na %d\n",head->ruch.pos1,head->ruch.pos2);
+		head=head->nastepny;
+	}
 }
