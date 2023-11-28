@@ -1,14 +1,11 @@
 void main()
 {
-	//char board[8][8] = { "rnbqkbnr","pppppppp","########","########","########","########","PPPPPPPP","RNBQKBNR"};
-	char board[8][8] = { "########","########","########","########","########","######n#","#####k##","#K######"};
+	char board[8][8] = { "n#######","##N#####","########","########","########","######n#","#####k##","#K######"};
 	move x={.pos1=56,.pos2=64};
 	drawBoard(board);
-	/*element *head = malloc(sizeof(element));
-	head = generate(board,0);
+	element *head = malloc(sizeof(element));
+	head = generate(board,1);
 
 	showL(head->nastepny);
-	zniszcz(head);*/
-	printf("%d\n",ifLegal(0,x,board));
-	printf("%d\n",ifLegal(0,x,board));
+	zniszcz(head);
 }
