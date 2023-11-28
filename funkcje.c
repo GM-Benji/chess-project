@@ -212,25 +212,34 @@ int checkStrForCheck(char *strCheck, int direction) //(1 szach na bialym (-1 sza
 int ifLegal(int color, move x, char board[8][8])//color: 0-czarny, 1-bialy
 {
 	if(brd(x.pos2,board)=='k' || brd(x.pos2,board)=='K')return 0;//bicie krola
-	if(x.pos1<0 || x.pos1>77)return 0;//czy jest w szachownicy
-	if(x.pos2<0 || x.pos2>77)return 0;
+	if(x.pos1<0 || x.pos1>77 || digi(x.pos1,2)>7)return 0;//czy jest w szachownicy
+	if(x.pos2<0 || x.pos2>77 || digi(x.pos2,2)>7)return 0;
 	if((brd(x.pos1,board)=='p' && (x.pos2-x.pos1)==20) && (digi(x.pos1,0)!=1))return 0;//pionki ruszaja sie o 2 tylko jak sie nie ruszyly wczesniej
 	if((brd(x.pos1,board)=='P' && (x.pos1-x.pos2)==20) && (digi(x.pos1,0)!=6))return 0;
 	if(( brd(x.pos1,board)=='p' || brd(x.pos1,board)=='P') && digi(x.pos1,1)!=digi(x.pos2,1) && brd(x.pos2,board)=='#')return 0;//pionek bije tylko kiedy ma co bic
 	int t=(int)brd(x.pos2,board);//czy bije kolor przeciwnika
 	if((t<=90 && t!=35) && color)return 0;
 	if(t>90 && !color)return 0;
-	char *str=calloc(8,sizeof(char));//sprawdzanie czy nie ma nic pomiedzy
-	str=substr(x,board);
-	if(!isWay(str))
+	if(brd(x.pos1,board)!='n' && brd(x.pos1,board)!='N')
 	{
+		char *str=calloc(8,sizeof(char));//sprawdzanie czy nie ma nic pomiedzy
+		str=substr(x,board);
+		if(!isWay(str))
+		{
+			free(str);
+			return 0;
+		}
 		free(str);
+	}
+	
+	char copyBoard[8][8];
+	strcpy(copyBoard,board);
+	copyBoard[digi(x.pos2,0)][digi(x.pos2,1)]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];//sprawdzanie czy nie ma szacha po wykonaniu posuniecia
+	copyBoard[digi(x.pos1,0)][digi(x.pos1,1)]='#';
+	if(isCheck(copyBoard,color))
+	{
 		return 0;
 	}
-	free(str);
-	board[digi(x.pos2,0)][digi(x.pos2,1)]=board[digi(x.pos1,0)][digi(x.pos1,1)];//sprawdzanie czy nie ma szacha po wykonaniu posuniecia
-	board[digi(x.pos1,0)][digi(x.pos1,1)]='#';
-	if(isCheck(board,color))return 0;
 	return 1;
 }
 void moveMaker(char board[8][8], move thisMove) //funkcja to wykonania ruchu ze sprawdzaniem czy jest mozliwy NIEKOMPLETNA
