@@ -75,13 +75,20 @@ char *substr(move x,char board[8][8])
 
 	return str;
 }
+int helper(char x)
+{
+	char tab[13]={'p','r','n','b','q','k','P','R','N','B','Q','K','#'};
+	for(int i=0;i<13;i++)
+	{
+		if(x==tab[i])return 1;
+	}
+	return 0;
+}
 int isWay(char *str)
 {
 	str++;
-	while(*str!=NULL)
+	while(helper(*str))
 	{
-		if(*(++str)==NULL)return 1;
-		str--;
 		if(*str!='#')return 0;
 		str++;
 	}
