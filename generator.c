@@ -55,6 +55,18 @@ element* generate(char board[8][8],int color)
 					}
 				}
 			}
+			if ((board[i][j] == 'b' && color==0) || (board[i][j] == 'B' && color==1)) //gonce
+            {
+                for(int k=0; k < 32; k++)
+                {
+                    ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[4][k]};
+					if(abs(digi(ruch.pos1,0)-digi(ruch.pos2,0))!=abs(digi(ruch.pos1,1)-digi(ruch.pos2,1)))continue;
+                    if(ifLegal(color,ruch,board))
+					{
+						utworz(ruch,head);
+					}
+                }
+            }
 		}
 	}
 	return head;
