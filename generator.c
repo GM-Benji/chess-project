@@ -67,6 +67,39 @@ element* generate(char board[8][8],int color)
 					}
                 }
             }
+			if ((board[i][j] == 'q' && color==0) || (board[i][j] == 'Q' && color==1)) //hetmany
+			{
+				for (int k = 1; k <= 28; k++)
+				{
+					
+					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[3][k]};
+					if(digi(ruch.pos1,0)!=digi(ruch.pos1+digi(moves.arr[3][k],1),0))continue;
+					if(ifLegal(color,ruch,board))
+					{
+						utworz(ruch,head);
+					}
+				}
+				for(int k=0; k < 32; k++)
+                {
+                    ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[4][k]};
+					if(abs(digi(ruch.pos1,0)-digi(ruch.pos2,0))!=abs(digi(ruch.pos1,1)-digi(ruch.pos2,1)))continue;
+                    if(ifLegal(color,ruch,board))
+					{
+						utworz(ruch,head);
+					}
+                }
+			}
+			if ((board[i][j] == 'k' && color==0) || (board[i][j] == 'K' && color==1)) //krole
+            {
+                for(int k=0; k < 8; k++)
+                {
+                    ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[5][k]};
+                    if(ifLegal(color,ruch,board))
+					{
+						utworz(ruch,head);
+					}
+                }
+            }
 		}
 	}
 	return head;
