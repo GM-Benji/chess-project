@@ -26,12 +26,12 @@ arrType init()
 	moves.arr[2][2] = 11;
 	moves.arr[2][3] = 9;
 	//rook
-	for (int i = 0; i < 32; i+=4)
+	for (int i = 4; i < 32; i+=4)
 	{
-		moves.arr[3][i] = i / 4;
-		moves.arr[3][i+1] = (i / 4)*10;
-		moves.arr[3][i+2] = -(i / 4)*10;
-		moves.arr[3][i+3] = -(i / 4);
+		moves.arr[3][i-3] = (int)(i / 4);
+		moves.arr[3][i-2] = (int)((i / 4)*10);
+		moves.arr[3][i-1] = (int)(-(i / 4)*10);
+		moves.arr[3][i] = (int)(-(i / 4));
 	}
 	//bishop
 	for (int i = 0; i < 32; i += 4)
