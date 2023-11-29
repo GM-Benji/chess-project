@@ -1,26 +1,56 @@
 element* generate(char board[8][8],int color)
 {
-	int* moves[6][32];
-	init(moves);
+	arrType moves=init();
 	move r={.pos1=0,.pos2=0};
 	element* head = malloc(sizeof(element));
 	*head = (element){ .ruch = r,.nastepny = NULL };
-	
+	move ruch={.pos1=-1,.pos2=-1};
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			if ((board[i][j] == 'n'&& color==0) || (board[i][j] == 'N' && color==1))
+			if ((board[i][j] == 'n'&& color==0) || (board[i][j] == 'N' && color==1))//skoczki
 			{
 				for (int k = 0; k < 8; k++)
 				{
-					int z=(int)(board[digi(i * 10 + j + *moves[0][k],0)][digi(i * 10 + j + *moves[0][k],1)]);//rzutowanie pola na int(czyli kod ascii)
-					if (
-						(i * 10 + j + *moves[0][k] >= 0 && i * 10 + j + *moves[0][k] <= 77 )//sprawdzanie czy nie wychodzi poza szachownice
-						&&( (z<=90 &&color==0) || ((z>90 || z==35)&& color==1) ) //sprawdzanie czy nie stoi figura tego samego koloru(z kodu ascii)
-						)
+					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[0][k]};
+					if(ifLegal(color,ruch,board))
 					{
-						move ruch={.pos1=i * 10 + j,.pos2=i * 10 + j + *moves[0][k]};
+						utworz(ruch,head);
+					}
+				}
+			}
+			if ((board[i][j] == 'P' && color))//biale pionki
+			{
+				for (int k = 0; k < 4; k++)
+				{
+					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[1][k]};
+					if(ifLegal(color,ruch,board))
+					{
+						utworz(ruch,head);
+					}
+				}
+			}
+			if ((board[i][j] == 'p' && !color))//czarne pionki
+			{
+				for (int k = 0; k < 4; k++)
+				{
+					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[2][k]};
+					if(ifLegal(color,ruch,board))
+					{
+						utworz(ruch,head);
+					}
+				}
+			}
+			if ((board[i][j] == 'r'&& color==0) || (board[i][j] == 'R' && color==1))//wieze
+			{
+				for (int k = 1; k <= 28; k++)
+				{
+					
+					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[3][k]};
+					if(digi(ruch.pos1,0)!=digi(ruch.pos1+digi(moves.arr[3][k],1),0))continue;
+					if(ifLegal(color,ruch,board))
+					{
 						utworz(ruch,head);
 					}
 				}
