@@ -86,6 +86,18 @@ int helper(char x)
 }
 int isWay(char *str)
 {
+	if(*str=='#')//jezeli str jest odwrocony to wstawia # na koniec
+	{
+		int counter=0;
+		while(helper(*str))
+		{
+			str++;
+			counter++;
+		}
+		str--;
+		*str='#';
+		str-=(counter-1);
+	}
 	str++;
 	while(helper(*str))
 	{
