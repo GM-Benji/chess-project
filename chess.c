@@ -14,7 +14,7 @@ element* generate(char board[8][8],int color)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			if ((board[i][j] == 'n'&& color==0) || (board[i][j] == 'N' && color==1))//skoczki
+			if ((board[i][j] == 'n' && color==0) || (board[i][j] == 'N' && color==1))//skoczki
 			{
 				for (int k = 0; k < 8; k++)
 				{
@@ -36,6 +36,39 @@ element* generate(char board[8][8],int color)
 					}
 				}
 			}
+			if ((board[i][j] == 'r' && color==0) || (board[i][j] == 'R' && color==1)) //wieze
+            {
+                for(int k=0; k < 32; k++)
+                {
+                    ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[3][k]};
+                    if(ifLegal(color,ruch,board))
+					{
+						utworz(ruch,head);
+					}
+                }
+            }
+            if ((board[i][j] == 'b' && color==0) || (board[i][j] == 'B' && color==1)) //wieze
+            {
+                for(int k=0; k < 32; k++)
+                {
+                    ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[4][k]};
+                    if(ifLegal(color,ruch,board))
+					{
+						utworz(ruch,head);
+					}
+                }
+            }
+            if ((board[i][j] == 'k' && color==0) || (board[i][j] == 'K' && color==1)) //wieze
+            {
+                for(int k=0; k < 8; k++)
+                {
+                    ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[5][k]};
+                    if(ifLegal(color,ruch,board))
+					{
+						utworz(ruch,head);
+					}
+                }
+            }
 		}
 	}
 	return head;
@@ -44,14 +77,14 @@ element* generate(char board[8][8],int color)
 void main()
 {
 	//char board[8][8] = { "rnbqkbnr","pppppppp","########","########","########","########","PPPPPPPP","RNBQKBNR"};
-	char board[8][8] = { "n#######","##N#####","########","########","########","###w##n#","###P#k##","#K######"};
-	move x={.pos1=56,.pos2=64};
+	char board[8][8] = { "##n#####","########","########","r######r","########","###w##n#","###P#k##","#K######"};
+	move x={.pos1=30,.pos2=0};
 	drawBoard(board);
 	element *head = malloc(sizeof(element));
-	head = generate(board,1);
+	head = generate(board,0);
 
 	showL(head->nastepny);
 	zniszcz(head);
 	//printf("%d\n",ifLegal(0,x,board));
-	
+
 }
