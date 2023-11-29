@@ -27,7 +27,16 @@ element* generate(char board[8][8],int color)
 					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[1][k]};
 					if(ifLegal(color,ruch,board))
 					{
-						utworz(ruch,head);
+					    if(digi(ruch.pos1, 0) == 1)
+						{
+						    int temp = ruch.pos1;
+                            ruch.pos1 = ruch.pos2;
+                            utworz(ruch, head); //promocja na hetmana np. 74 do 74
+                            ruch.pos1 = temp;
+                            ruch.pos2 = temp;
+                            utworz(ruch, head); //promocja na skoczka np. 64 do 64
+						}
+						else utworz(ruch,head);
 					}
 				}
 			}
@@ -38,15 +47,26 @@ element* generate(char board[8][8],int color)
 					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[2][k]};
 					if(ifLegal(color,ruch,board))
 					{
-						utworz(ruch,head);
+						if(digi(ruch.pos2, 0) == 7)
+						{
+						    int temp = ruch.pos1;
+                            ruch.pos1 = ruch.pos2;
+                            utworz(ruch, head); //promocja na hetmana np. 74 do 74
+                            ruch.pos1 = temp;
+                            ruch.pos2 = temp;
+                            utworz(ruch, head); //promocja na skoczka np. 64 do 64
+						}
+						else utworz(ruch,head);
 					}
+
+
 				}
 			}
 			if ((board[i][j] == 'r'&& color==0) || (board[i][j] == 'R' && color==1))//wieze
 			{
 				for (int k = 1; k <= 28; k++)
 				{
-					
+
 					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[3][k]};
 					if(digi(ruch.pos1,0)!=digi(ruch.pos1+digi(moves.arr[3][k],1),0))continue;
 					if(ifLegal(color,ruch,board))
@@ -57,7 +77,7 @@ element* generate(char board[8][8],int color)
 			}
 			if ((board[i][j] == 'b' && color==0) || (board[i][j] == 'B' && color==1)) //gonce
             {
-                for(int k=0; k < 32; k++)
+                for(int k=1; k < 32; k++)
                 {
                     ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[4][k]};
 					if(abs(digi(ruch.pos1,0)-digi(ruch.pos2,0))!=abs(digi(ruch.pos1,1)-digi(ruch.pos2,1)))continue;
@@ -71,7 +91,7 @@ element* generate(char board[8][8],int color)
 			{
 				for (int k = 1; k <= 28; k++)
 				{
-					
+
 					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[3][k]};
 					if(digi(ruch.pos1,0)!=digi(ruch.pos1+digi(moves.arr[3][k],1),0))continue;
 					if(ifLegal(color,ruch,board))
