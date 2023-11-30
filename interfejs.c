@@ -46,8 +46,8 @@ int gameOver(char board[8][8]) //do zrobienia w innym pliku bo z tego beda korzy
     return 0;
 }
 
-move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawdzającej czy ruch jest możliwy do wykonania
-{
+move typeMove() //trzeba jeszcze dorobiæ ¿eby pobiera³o info z funkcji sprawdzaj¹cej czy ruch jest mo¿liwy do wykonania
+{// dopisac zeby sprawdzalo czy wpisany ruch jest w liscie z tych wygenerowanych, wtedy if else z iflegalem niepotrzebny
     char kolumny[8] = {'a','b','c','d','e','f','g','h'}; //tablice pomocnicze do porownania z inputem
     char wiersze[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
 
@@ -60,30 +60,31 @@ move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawd
     int isInputOk; //zmienna ktora pomoga sprawdzic czy input jest poprawnie wpisany
     do
     {
+        isInputOk = 1;
         char takeMove[5];
         printf("(np. g8-f6) >> ");
         scanf("%s", takeMove);
 
         int isOkey0=0, isOkey1=0, isOkey3=0, isOkey4=0;
 
-        for(int i=0; i<8 && (isOkey0 == 0 || isOkey1 == 0 || isOkey3 == 0 || isOkey4 == 0); i++) //petla leci po calej kolumny i wiersze oraz jezeli wszystko zostalo przekonwertowane poprawnie to wszyskie isOkey zmieniaja sie na 1
+        for(int i=0; i<=8 && (isOkey0 == 0 || isOkey1 == 0 || isOkey3 == 0 || isOkey4 == 0); i++) //petla leci po calej kolumny i wiersze oraz jezeli wszystko zostalo przekonwertowane poprawnie to wszyskie isOkey zmieniaja sie na 1
         {
-            if(takeMove[0] == kolumny[i])
+            if(isOkey0 == 0 && takeMove[0] == kolumny[i])
             {
                 conv.pos1 += i;
                 isOkey0=1;
             }
-            if(takeMove[1] == wiersze[i])
+            if(isOkey1 == 0 && takeMove[1] == wiersze[i])
             {
                 conv.pos1 += i*10;
                 isOkey1=1;
             }
-            if(takeMove[3] == kolumny[i])
+            if(isOkey3 == 0 && takeMove[3] == kolumny[i])
             {
                 conv.pos2 += i;
                 isOkey3=1;
             }
-            if(takeMove[4] == wiersze[i])
+            if(isOkey4 == 0 && takeMove[4] == wiersze[i])
             {
                 conv.pos2 += i*10;
                 isOkey4=1;
@@ -95,12 +96,11 @@ move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawd
             printf("invalid input notation\n");
             isInputOk = 0;
         }
-        /*
-        else if(isLane(char substr(move x,char board[8][8]))) // tu musi być warunek ze jezeli ruch jest niemozliwy bo gracz jest szacha albo po drodze ruchu coś stoi
+        else if(!(ifLegal(1,conv,board))) // tu musi byæ warunek ze jezeli ruch jest niemozliwy bo gracz jest szacha albo po drodze ruchu coœ stoi
         {
             printf("You cant make this move\n");
             isInputOk = 0;
-        }*/
+        }
         else // jezeli zostalo wpisane dobrze to wypisuje ze teraz sie dzieje analiza planszy, zmienia isInputOk i nie robi petli jeszcze raz
         {
             printf("pricessing the move..\n");
@@ -111,8 +111,11 @@ move typeMove() //trzeba jeszcze dorobić żeby pobierało info z funkcji sprawd
     } while(isInputOk == 0); // jezeli cos nie zostalo zmienione to powtarza wpisywanie
     //printf("\n%d\n", isInputOk);
 
+    moveMaker(board, conv);
+
     return conv;
 }
+
 
 int main()
 {
