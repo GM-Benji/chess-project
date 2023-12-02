@@ -61,6 +61,8 @@ move typeMove() //trzeba jeszcze dorobiæ ¿eby pobiera³o info z funkcji sprawd
     do
     {
         isInputOk = 1;
+        conv.pos1 = NULL;
+        conv.pos2 = NULL;
         char takeMove[5];
         printf("(np. g8-f6) >> ");
         scanf("%s", takeMove);
@@ -96,15 +98,18 @@ move typeMove() //trzeba jeszcze dorobiæ ¿eby pobiera³o info z funkcji sprawd
             printf("invalid input notation\n");
             isInputOk = 0;
         }
-        else if(!(ifLegal(1,conv,board))) // tu musi byæ warunek ze jezeli ruch jest niemozliwy bo gracz jest szacha albo po drodze ruchu coœ stoi
-        {
-            printf("You cant make this move\n");
-            isInputOk = 0;
-        }
         else // jezeli zostalo wpisane dobrze to wypisuje ze teraz sie dzieje analiza planszy, zmienia isInputOk i nie robi petli jeszcze raz
         {
-            printf("pricessing the move..\n");
-            isInputOk = 1;
+            if(!(ifLegal(1,conv,board))) // tu musi byæ warunek ze jezeli ruch jest niemozliwy bo gracz jest szacha albo po drodze ruchu coœ stoi
+            {
+                printf("You cant make this move\n");
+                isInputOk = 0;
+            }
+            else
+            {
+                printf("pricessing the move..\n");
+                isInputOk = 1;
+            }
         }
 
         //printf("%d | %d\n", conv.pos1, conv.pos2);
@@ -115,7 +120,6 @@ move typeMove() //trzeba jeszcze dorobiæ ¿eby pobiera³o info z funkcji sprawd
 
     return conv;
 }
-
 
 int main()
 {
