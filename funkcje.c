@@ -194,7 +194,7 @@ int isCheck(char board[8][8],int color)//1- jest szach, 0- nie ma szacha
 	return 0;
 }
 
-int checkStrForCheck(char *strCheck, int direction) //(1 szach na bialym (-1 szach na czarnym) \ 0-straight 1-diagonal \ color k-czarny K-bialy // funkcja na podstawie tego czy nma pierwszym miejscu jest k czy K określa czy sprawdza szach białego czy czarnego!
+int checkStrForCheck(char *strCheck, int direction) //(1 szach na bialym (-1 szach na czarnym) \ 0-straight 1-diagonal \ color k-czarny K-bialy // funkcja na podstawie tego czy nma pierwszym miejscu jest k czy K okreœla czy sprawdza szach bia³ego czy czarnego!
 {
     int size = strlen(strCheck);
 
@@ -208,9 +208,9 @@ int checkStrForCheck(char *strCheck, int direction) //(1 szach na bialym (-1 sza
         }
     }
 
-    for(int i=1; strCheck[0] == 'k' && i < size; i++) //na pierwszym miejscu string zawsze jest król, więc jego pomijamy ale najpierw trzeba sprawdzic ktory to stad pierwszy warunek w forze
+    for(int i=1; strCheck[0] == 'k' && i < size; i++) //na pierwszym miejscu string zawsze jest król, wiêc jego pomijamy ale najpierw trzeba sprawdzic ktory to stad pierwszy warunek w forze
     {
-        if(strCheck[i] != '#' && strCheck[i] != '\0')
+        if(strCheck[i] != '#')
         {
             if(direction == 0 && (strCheck[i] == 'Q' || strCheck[i] == 'R')) return -1;
             if(direction == 1 && (strCheck[i] == 'Q' || strCheck[i] == 'B')) return -1;
@@ -219,14 +219,14 @@ int checkStrForCheck(char *strCheck, int direction) //(1 szach na bialym (-1 sza
     }
     for(int i=1; strCheck[0] == 'K' && i < size; i++)
     {
-        if(strCheck[i] != '#' && strCheck[i] != '\0')
+        if(strCheck[i] != '#')
         {
             if(direction == 0 && (strCheck[i] == 'q' || strCheck[i] == 'r')) return 1;
             if(direction == 1 && (strCheck[i] == 'q' || strCheck[i] == 'b')) return 1;
             return 0;
         }
     }
-    return 0;
+	return 0;
 }
 int ifLegal(int color, move x, char board[8][8])//color: 0-czarny, 1-bialy
 {
