@@ -31,10 +31,16 @@ element* generate(char board[8][8],int color)
 						{
 						    int temp = ruch.pos1;
                             ruch.pos1 = ruch.pos2;
-                            utworz(ruch, head); //promocja na hetmana np. 74 do 74
+                            utworz(ruch, head); //promocja na hetmana np. 4 do 74
                             ruch.pos1 = temp;
                             ruch.pos2 = temp;
-                            utworz(ruch, head); //promocja na skoczka np. 64 do 64
+                            utworz(ruch, head); //promocja na skoczka np. 14 do 14
+							ruch.pos1 += 10;
+                            ruch.pos2 += 10;
+							utworz(ruch, head); //promocja na gonca np. 24 do 24
+							ruch.pos1 += 10;
+                            ruch.pos2 += 10;
+							utworz(ruch, head); //promocja na wieze 34 do 34
 						}
 						else utworz(ruch,head);
 					}
@@ -55,6 +61,12 @@ element* generate(char board[8][8],int color)
                             ruch.pos1 = temp;
                             ruch.pos2 = temp;
                             utworz(ruch, head); //promocja na skoczka np. 64 do 64
+							ruch.pos1-=10;
+							ruch.pos2-=10;
+							utworz(ruch, head); //promocja na gonca np. 54 do 54
+							ruch.pos1-=10;
+							ruch.pos2-=10;
+							utworz(ruch, head); //promocja na wieze np. 44 do 44
 						}
 						else utworz(ruch,head);
 					}
