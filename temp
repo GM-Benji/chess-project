@@ -1,11 +1,15 @@
-void main()
+typedef struct set {
+	char board[8][8];
+}set;
+set *setInit(char board[8][8])
 {
-	char board[8][8] = { "n#######","##N#####","########","########","########","######n#","#####k##","#K######"};
-	move x={.pos1=56,.pos2=64};
-	drawBoard(board);
-	element *head = malloc(sizeof(element));
-	head = generate(board,1);
-
-	showL(head->nastepny);
-	zniszcz(head);
+	set *game;
+	for(int i=0;i<8;i++)
+	{
+		for(int j=0;j<8;j++)
+		{
+			game.board[i][j]=board[i][j];
+		}
+	}
+	return game;
 }
