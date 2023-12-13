@@ -1,9 +1,13 @@
 typedef struct set {
 	char board[8][8];
+    int movedWhitePawns; // pamiec czy pionki sie ruszylu o dwa pola oraz krole i wieze sie ruszyly
+    int movedBlackPawns;
+    int movedWhiteCastle[3]; // lewa wieza, krol, prawa wieza
+    int movedBlackCastle[3];
 }set;
-set *setInit(char board[8][8])
+set setInit(char board[8][8])
 {
-	set *game;
+	set game;
 	for(int i=0;i<8;i++)
 	{
 		for(int j=0;j<8;j++)
@@ -11,5 +15,13 @@ set *setInit(char board[8][8])
 			game.board[i][j]=board[i][j];
 		}
 	}
+
+    game.movedWhitePawns = 0;
+    game.movedBlackPawns = 0;
+    for(int i=0; i<3; i++)
+    {
+        game.movedWhiteCastle[i] = 0;
+        game.movedBlackCastle[i] = 0;
+    }
 	return game;
 }
