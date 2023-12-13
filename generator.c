@@ -123,9 +123,35 @@ element* generate(set game,int color)
 			}
 			if ((game.board[i][j] == 'k' && color==0) || (game.board[i][j] == 'K' && color==1)) //krole
             {
-                for(int k=0; k < 8; k++)
+                for(int k=0; k < 10; k++)
                 {
                     ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[5][k]};
+					if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==-2)//roszada krotka
+					{
+						if(color && game.movedWhiteCastle[1]==0 && game.movedWhiteCastle[2]==0 && ifCastle(game.board,color,ruch))
+						{
+							utworz(ruch,head);
+							continue;
+						}
+						if(!color && game.movedBlackCastle[1]==0 && game.movedBlackCastle[2]==0 && ifCastle(game.board,!color,ruch))
+						{
+							utworz(ruch,head);
+							continue;
+						}
+					}
+					if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==2)//roszada dluga
+					{
+						if(color && game.movedWhiteCastle[0]==0 && game.movedWhiteCastle[1]==0 && ifCastle(game.board,color,ruch))
+						{
+							utworz(ruch,head);
+							continue;
+						}
+						if(!color && game.movedBlackCastle[0]==0 && game.movedBlackCastle[1]==0 && ifCastle(game.board,!color,ruch))
+						{
+							utworz(ruch,head);
+							continue;
+						}
+					}
                     if(ifLegal(color,ruch,game.board))
 					{
 						utworz(ruch,head);
