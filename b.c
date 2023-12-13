@@ -376,13 +376,13 @@ int isCheck(char board[8][8],int color)//1- jest szach, 0- nie ma szacha
 		if(checkStrForCheck(tempStr,d)==1 && color)
 		{
 			free(tempStr);
-			printf("checkStr=%d\n",checkStrForCheck(tempStr,d));
+			//printf("checkStr=%d\n",checkStrForCheck(tempStr,d));
 			return 1;
 		}
 		if(checkStrForCheck(tempStr,d)==-1 && !color)
 		{
 			free(tempStr);
-			printf("checkStr=%d\n",checkStrForCheck(tempStr,d));
+			//printf("checkStr=%d\n",checkStrForCheck(tempStr,d));
 			return 1;
 		}
 	}
@@ -577,3 +577,41 @@ void moveMaker(char board[8][8], move thisMove) //funkcja to wykonania ruchu ze 
         } while(isOkey == 0);
     }
 }
+
+int ifCastle(char board[8][8],int color,move x)//0 nie mozna roszady, 1- mozna roszade
+{
+	if(x.pos1<x.pos2)//krotka roszada
+	{
+		char *str=calloc(8,sizeof(char));
+		str=substr(x,board);
+		if(!isWay(str))return 0;
+		if(isCheck(board,color))return 0;
+		char copyBoard[8][8];
+		strcpy(copyBoard,board);
+		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];
+		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)]='#';
+		if(isCheck(copyBoard,color))return 0;
+		copyBoard[digi(x.pos2,0)][digi(x.pos2,1)]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1];
+		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1]='#';
+		if(isCheck(copyBoard,color))return 0;
+		return 1;
+	}
+	else//dluga roszada
+	{
+		char *str=calloc(8,sizeof(char));
+		x.pos2--;
+		str=substr(x,board);
+		if(!isWay(str))return 0;
+		if(isCheck(board,color))return 0;
+		char copyBoard[8][8];
+		strcpy(copyBoard,board);
+		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];
+		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)]='#';
+		if(isCheck(copyBoard,color))return 0;
+		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-2]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1];
+		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1]='#';
+		if(isCheck(copyBoard,color))return 0;
+		return 1;
+	}
+}
+
