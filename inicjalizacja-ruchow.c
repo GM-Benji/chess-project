@@ -50,5 +50,7 @@ arrType init()
 	moves.arr[5][5] = -11;
 	moves.arr[5][6] = -10;
 	moves.arr[5][7] = -9;
+	moves.arr[5][8] = -2;
+	moves.arr[5][9] = 2;
 	return moves;
 }
