@@ -328,3 +328,39 @@ int ifCastle(char board[8][8],int color,move x)//0 nie mozna roszady, 1- mozna r
 		return 1;
 	}
 }
+int ifEnPassant(set game, int color, move ruch) // usunac te elementy z generatora wszystko ma byc tu
+{
+    if(color)
+    {
+        if(game.movedBlackPawns == -1 || game.movedBlackPawns == -1) return 0;
+        if(digi(ruch.pos1,0) != 3) return 0;
+        if(game.movedBlackPawns != digi(ruch.pos2,1)) return 0; // zlamany if sprawdza czy jest niemozliwe bicie w przelocie
+
+        char copyBoard[8][8];
+        strcpy(copyBoard,game.board);
+        copyBoard[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)]; // przesuniecie pionka ktory bije
+        copyBoard[digi(ruch.pos1,0)][digi(ruch.pos1,1)] = '#';
+        copyBoard[digi(ruch.pos2,0)+1][digi(ruch.pos2,1)] = '#'; // usuniecie pionka zbijanego
+
+        drawBoard(copyBoard);
+
+        if(isCheck(copyBoard, color)) return 0;
+    }
+    if(!color)
+    {
+        if(game.movedWhitePawns == -1 || game.movedWhitePawns == -1) return 0;
+        if(digi(ruch.pos1,0) != 4) return 0;
+        if(game.movedWhitePawns != digi(ruch.pos2,1)) return 0; // zlamany if sprawdza czy jest niemozliwe bicie w przelocie
+
+        char copyBoard[8][8];
+        strcpy(copyBoard,game.board);
+        copyBoard[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)]; // przesuniecie pionka ktory bije
+        copyBoard[digi(ruch.pos1,0)][digi(ruch.pos1,1)] = '#';
+        copyBoard[digi(ruch.pos2,0)-1][digi(ruch.pos2,1)] = '#'; // usuniecie pionka zbijanego
+
+        drawBoard(copyBoard);
+
+        if(isCheck(copyBoard, color)) return 0;
+    }
+    return 1;
+}
