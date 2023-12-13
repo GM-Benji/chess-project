@@ -5,6 +5,12 @@ element* generate(set game,int color)
 	element* head = malloc(sizeof(element));
 	*head = (element){ .ruch = r,.nastepny = NULL };
 	move ruch={.pos1=-1,.pos2=-1};
+
+    // zerowanie zmiennych do bicia w przelocie z poprzedniego ruchu -1 oznacza ze dany pionek nie ruszyl sie w poprzednim ruchu o 2 pola
+    if(color) game.movedWhitePawns = -1;
+    if(!color) game.movedBlackPawns = -1;
+    game.movedWhitePawns = 6;
+
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
@@ -25,6 +31,9 @@ element* generate(set game,int color)
 				for (int k = 0; k < 4; k++)
 				{
 					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[1][k]};
+
+					if((k==2 || k==3) && ifEnPassant(game, color, ruch)) utworz(ruch,head); // bicie w przelocie
+
 					if(ifLegal(color,ruch,game.board))
 					{
 					    if(digi(ruch.pos1, 0) == 1)
@@ -43,7 +52,7 @@ element* generate(set game,int color)
 							utworz(ruch, head); //promocja na wieze 34 do 34
 						}
 						else utworz(ruch,head);
-					}
+                    }
 				}
 			}
 			if ((game.board[i][j] == 'p' && !color))//czarne pionki
@@ -51,6 +60,9 @@ element* generate(set game,int color)
 				for (int k = 0; k < 4; k++)
 				{
 					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[2][k]};
+
+                    if((k==2 || k==3) && ifEnPassant(game, color, ruch)) utworz(ruch,head); // bicie w przelocie
+
 					if(ifLegal(color,ruch,game.board))
 					{
 						if(digi(ruch.pos2, 0) == 7)
@@ -70,8 +82,6 @@ element* generate(set game,int color)
 						}
 						else utworz(ruch,head);
 					}
-
-
 				}
 			}
 			if ((game.board[i][j] == 'r'&& color==0) || (game.board[i][j] == 'R' && color==1))//wieze
