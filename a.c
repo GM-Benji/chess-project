@@ -29,26 +29,42 @@ set setInit(char board[8][8])
     }
 	return game;
 }
-/*
-int ifPrzelot(int board[8][8], move ruch, set game)
-{
-    if(game.movedBlackPawns)
-    {
-        if(board[3][digi(ruch.pos1-1),1] == 'p', || board[3][digi(ruch.pos1+1),1] == 'p') return 1;
-        if(board[4][digi(ruch.pos1-1),1] == 'P', || board[3][digi(ruch.pos1+1),1] == 'P') return 1;
-    }
-    return 0;
-}*/
 
 int ifEnPassant(set game, int color, move ruch) // usunac te elementy z generatora wszystko ma byc tu
 {
-    char copyBoard[8][8];
-	strcpy(copyBoard,board);
-    copyBoard[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)];
-    copyBoard[digi(ruch.pos2,0)][digi(ruch.pos2,1)]
+    if(color)
+    {
+        if(game.movedBlackPawns == -1 || game.movedBlackPawns == -1) return 0;
+        if(digi(ruch.pos1,0) != 3) return 0;
+        if(game.movedBlackPawns != digi(ruch.pos2,1)) return 0; // zlamany if sprawdza czy jest niemozliwe bicie w przelocie
 
-    if(isCheck(copyBoard, color) return 0;
-    if((game.movedBlackPawns == digi(ruch.pos1,1) || game.movedBlackPawns == digi(ruch.pos1,1)+2) && digi(ruch.pos1,0)==4) return 1; // zlamany if sprawdza czy jest mozliwe bicie w przelocie
+        char copyBoard[8][8];
+        strcpy(copyBoard,game.board);
+        copyBoard[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)]; // przesuniecie pionka ktory bije
+        copyBoard[digi(ruch.pos1,0)][digi(ruch.pos1,1)] = '#';
+        copyBoard[digi(ruch.pos2,0)+1][digi(ruch.pos2,1)] = '#'; // usuniecie pionka zbijanego
+
+        drawBoard(copyBoard);
+
+        if(isCheck(copyBoard, color)) return 0;
+    }
+    if(!color)
+    {
+        if(game.movedWhitePawns == -1 || game.movedWhitePawns == -1) return 0;
+        if(digi(ruch.pos1,0) != 4) return 0;
+        if(game.movedWhitePawns != digi(ruch.pos2,1)) return 0; // zlamany if sprawdza czy jest niemozliwe bicie w przelocie
+
+        char copyBoard[8][8];
+        strcpy(copyBoard,game.board);
+        copyBoard[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)]; // przesuniecie pionka ktory bije
+        copyBoard[digi(ruch.pos1,0)][digi(ruch.pos1,1)] = '#';
+        copyBoard[digi(ruch.pos2,0)-1][digi(ruch.pos2,1)] = '#'; // usuniecie pionka zbijanego
+
+        drawBoard(copyBoard);
+
+        if(isCheck(copyBoard, color)) return 0;
+    }
+    return 1;
 }
 
 element* generate(set game,int color)
@@ -59,9 +75,10 @@ element* generate(set game,int color)
 	*head = (element){ .ruch = r,.nastepny = NULL };
 	move ruch={.pos1=-1,.pos2=-1};
 
-    // zerowanie zmiennych do bicia w przelocie z poprzedniego ruchu
-    if(color) game.movedWhitePawns = 0;
-    if(!color) game.movedBlackPawns = 1;
+    // zerowanie zmiennych do bicia w przelocie z poprzedniego ruchu -1 oznacza ze dany pionek nie ruszyl sie w poprzednim ruchu o 2 pola
+    if(color) game.movedWhitePawns = -1;
+    if(!color) game.movedBlackPawns = -1;
+    game.movedWhitePawns = 6;
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -80,14 +97,12 @@ element* generate(set game,int color)
 			}
 			if ((game.board[i][j] == 'P' && color))//biale pionki
 			{
-                if(digi(ruch.pos1, 0)-digi(ruch.pos2, 0) == 2) game.movedWhitePawns = digi(ruch.pos2, 1)+1; // ustawia ze wykonany ruch umozliwia bicie w przelocie
-                if( (game.movedBlackPawns == digi(ruch.pos1,1) || game.movedBlackPawns == digi(ruch.pos1,1)+2)
-                && digi(ruch.pos1,0)==3) // zlamany if sprawdza czy jest mozliwe bicie w przelocie
-                    utworz(ruch, head);
-
 				for (int k = 0; k < 4; k++)
 				{
 					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[1][k]};
+
+					if((k==2 || k==3) && ifEnPassant(game, color, ruch)) utworz(ruch,head); // bicie w przelocie
+
 					if(ifLegal(color,ruch,game.board))
 					{
 					    if(digi(ruch.pos1, 0) == 1)
@@ -106,19 +121,17 @@ element* generate(set game,int color)
 							utworz(ruch, head); //promocja na wieze 34 do 34
 						}
 						else utworz(ruch,head);
-					}
+                    }
 				}
 			}
 			if ((game.board[i][j] == 'p' && !color))//czarne pionki
 			{
-			    if(digi(ruch.pos2, 0)-digi(ruch.pos1, 0) == 2) game.movedWhitePawns = digi(ruch.pos2, 1)+1; // ustawia ze wykonany ruch umozliwia bicie w przelocie
-			    if( (game.movedBlackPawns == digi(ruch.pos1,1) || game.movedBlackPawns == digi(ruch.pos1,1)+2)
-                   && digi(ruch.pos1,0)==4) // zlamany if sprawdza czy jest mozliwe bicie w przelocie
-                    utworz(ruch, head);
-
 				for (int k = 0; k < 4; k++)
 				{
 					ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[2][k]};
+
+                    if((k==2 || k==3) && ifEnPassant(game, color, ruch)) utworz(ruch,head); // bicie w przelocie
+
 					if(ifLegal(color,ruch,game.board))
 					{
 						if(digi(ruch.pos2, 0) == 7)
@@ -138,8 +151,6 @@ element* generate(set game,int color)
 						}
 						else utworz(ruch,head);
 					}
-
-
 				}
 			}
 			if ((game.board[i][j] == 'r'&& color==0) || (game.board[i][j] == 'R' && color==1))//wieze
@@ -191,19 +202,35 @@ element* generate(set game,int color)
 			}
 			if ((game.board[i][j] == 'k' && color==0) || (game.board[i][j] == 'K' && color==1)) //krole
             {
-                if(game.movedBlackCastle) // roszada w prawo
-                {
-                    for(int l=0; l < 2; l++)
-                    ruch = (move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[5][l]};
-
-                }
-                if(abs(digi(ruch.pos1, 1)-digi(ruch.pos2, 1)) == -2) // roszada w lewo
-                {
-
-                }
-                for(int k=0; k < 8; k++)
+                for(int k=0; k < 10; k++)
                 {
                     ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[5][k]};
+					if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==-2)//roszada krotka
+					{
+						if(color && game.movedWhiteCastle[1]==0 && game.movedWhiteCastle[2]==0 && ifCastle(game.board,color,ruch))
+						{
+							utworz(ruch,head);
+							continue;
+						}
+						if(!color && game.movedBlackCastle[1]==0 && game.movedBlackCastle[2]==0 && ifCastle(game.board,!color,ruch))
+						{
+							utworz(ruch,head);
+							continue;
+						}
+					}
+					if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==2)//roszada dluga
+					{
+						if(color && game.movedWhiteCastle[0]==0 && game.movedWhiteCastle[1]==0 && ifCastle(game.board,color,ruch))
+						{
+							utworz(ruch,head);
+							continue;
+						}
+						if(!color && game.movedBlackCastle[0]==0 && game.movedBlackCastle[1]==0 && ifCastle(game.board,!color,ruch))
+						{
+							utworz(ruch,head);
+							continue;
+						}
+					}
                     if(ifLegal(color,ruch,game.board))
 					{
 						utworz(ruch,head);
@@ -216,14 +243,14 @@ element* generate(set game,int color)
 }
 
 char board[8][8] = {
-    { '#', '#', '#', 'k', '#', '#', '#', '#' },
-    { '#', '#', '#', '#', '#', '#', '#', '#' },
-    { '#', '#', '#', '#', '#', '#', '#', '#' },
-    { 'p', 'P', '#', '#', '#', '#', 'P', 'p' },
+    { '#', '#', '#', '#', '#', 'k', '#', '#' },
     { '#', '#', '#', '#', '#', '#', '#', '#' },
     { '#', '#', '#', '#', '#', '#', '#', '#' },
     { '#', '#', '#', '#', '#', '#', '#', '#' },
-    { '#', '#', '#', 'K', '#', '#', '#', '#' }
+    { '#', '#', '#', '#', 'P', 'p', 'P', '#' },
+    { '#', '#', '#', '#', '#', '#', '#', '#' },
+    { '#', '#', '#', '#', '#', '#', '#', '#' },
+    { '#', 'K', '#', '#', '#', 'Q', '#', '#' }
 };
 
 int gameOver(char board[8][8]) //do zrobienia w innym pliku bo z tego beda korzystac inne funkcje
@@ -310,7 +337,7 @@ void main()
 {
 	//char board[8][8] = { "rnbqkbnr","pppppppp","########","########","########","########","PPPPPPPP","RNBQKBNR"};
 	//char board[8][8] = { "########","######B#","########","K#######","########","##b#####","########","k#######"};
-	move x={.pos1=71,.pos2=51};
+	move x={.pos1=31,.pos2=20};
 	drawBoard(board);
 
     //isCheck(board, 0);
@@ -319,10 +346,11 @@ void main()
     printf("%d\n",isCheck(board, 0));
 
     set game = setInit(board);
-    drawBoard(game.board);
+    //drawBoard(game.board);
+    printf("to tyle \n");
 
     element *head = malloc(sizeof(element));
-	head = generate(game,1);
+	head = generate(game,0);
 
 	showL(head->nastepny);
 
