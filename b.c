@@ -57,7 +57,7 @@ element* utworz(move ruch, element* head)
    if(!*n) return;
    destroy(&((*n)->next));
    free(*n);
-   *n = NULL; 
+   *n = NULL;
 }*/
 void zniszcz(element** head)
 {
@@ -199,7 +199,7 @@ char brd(int x, char board[8][8])
 }
 char *substr(move x,char board[8][8])
 {
-	
+
 	int temp=abs(digi(x.pos1,0)-digi(x.pos2,0));//przesuniecie na wierszach
 	if(abs(digi(x.pos1,1)-digi(x.pos2,1))>temp)temp=abs(digi(x.pos1,1)-digi(x.pos2,1));//przesuniecie na kolumnach
 	char *str=calloc(9,sizeof(char));
@@ -349,7 +349,7 @@ int isCheck(char board[8][8],int color)//1- jest szach, 0- nie ma szacha
 		if((posK+11>=0 && posK+11<=77) && brd(posK+11,board)=='P')return 1;
 		if((posK+9>=0 && posK+9<=77) && brd(posK+9,board)=='P')return 1;
 	}
-	
+
 	//ruchy proste
 	move x1={.pos1=digi(posK,0)*10,.pos2=posK};//od lewej do krola
 	move x2={.pos1=posK,.pos2=digi(posK,0)*10+7};//od krola do prawej
@@ -397,7 +397,7 @@ int isCheck(char board[8][8],int color)//1- jest szach, 0- nie ma szacha
 		}
 	}
 	free(tempStr);
-	
+
 	return 0;
 }
 
@@ -426,7 +426,7 @@ int ifLegal(int color, move x, char board[8][8])//color: 0-czarny, 1-bialy
 		}
 		free(str);
 	}
-	
+
 	char copyBoard[8][8];
 	strcpy(copyBoard,board);
 	copyBoard[digi(x.pos2,0)][digi(x.pos2,1)]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];//sprawdzanie czy nie ma szacha po wykonaniu posuniecia
@@ -470,16 +470,33 @@ int ifCastle(char board[8][8],int color,move x)//0 nie mozna roszady, 1- mozna r
 	{
 		char *str=calloc(8,sizeof(char));
 		str=substr(x,board);
-		if(!isWay(str))return 0;
-		if(isCheck(board,color))return 0;
+		if(!isWay(str))
+		{
+		    free(str);
+		    return 0;
+		}
+		if(isCheck(board,color))
+        {
+		    free(str);
+		    return 0;
+		}
 		char copyBoard[8][8];
 		strcpy(copyBoard,board);
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
 		copyBoard[digi(x.pos2,0)][digi(x.pos2,1)]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
+		free(str);
 		return 1;
 	}
 	else//dluga roszada
@@ -487,16 +504,33 @@ int ifCastle(char board[8][8],int color,move x)//0 nie mozna roszady, 1- mozna r
 		char *str=calloc(8,sizeof(char));
 		x.pos2--;
 		str=substr(x,board);
-		if(!isWay(str))return 0;
-		if(isCheck(board,color))return 0;
+		if(!isWay(str))
+        {
+		    free(str);
+		    return 0;
+		}
+		if(isCheck(board,color))
+		{
+		    free(str);
+		    return 0;
+		}
 		char copyBoard[8][8];
 		strcpy(copyBoard,board);
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-2]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
+		free(str);
 		return 1;
 	}
 }
