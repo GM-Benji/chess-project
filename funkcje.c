@@ -299,16 +299,33 @@ int ifCastle(char board[8][8],int color,move x)//0 nie mozna roszady, 1- mozna r
 	{
 		char *str=calloc(8,sizeof(char));
 		str=substr(x,board);
-		if(!isWay(str))return 0;
-		if(isCheck(board,color))return 0;
+		if(!isWay(str))
+		{
+		    free(str);
+		    return 0;
+		}
+		if(isCheck(board,color))
+        {
+		    free(str);
+		    return 0;
+		}
 		char copyBoard[8][8];
 		strcpy(copyBoard,board);
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
 		copyBoard[digi(x.pos2,0)][digi(x.pos2,1)]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
+		free(str);
 		return 1;
 	}
 	else//dluga roszada
@@ -316,16 +333,33 @@ int ifCastle(char board[8][8],int color,move x)//0 nie mozna roszady, 1- mozna r
 		char *str=calloc(8,sizeof(char));
 		x.pos2--;
 		str=substr(x,board);
-		if(!isWay(str))return 0;
-		if(isCheck(board,color))return 0;
+		if(!isWay(str))
+        {
+		    free(str);
+		    return 0;
+		}
+		if(isCheck(board,color))
+		{
+		    free(str);
+		    return 0;
+		}
 		char copyBoard[8][8];
 		strcpy(copyBoard,board);
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-2]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
+		free(str);
 		return 1;
 	}
 }
