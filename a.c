@@ -27,6 +27,7 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 	            best.x.pos1=1000;
 	            best.x.pos2=1000;
 	            best.value=1000;
+			zniszcz(&head);
 	            return best;
 	        }
 	    }
@@ -36,6 +37,7 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 					{
 					best.x.pos1=-1000;
 	                best.x.pos2=-1000;
+						zniszcz(&head);
 	                return best;
 					}
 				}
@@ -44,6 +46,7 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 	        best.x.pos1=100;
 	        best.x.pos2=100;
 			best.value=0;
+		    		zniszcz(&head);
 	        return best;
 	    }
 	}
@@ -69,6 +72,8 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 	                {
 	                    best.x.pos1=1000;
 	                    best.x.pos2=1000;
+				zniszcz(&head);
+                    zniszcz(&head2);
 	                    return best;
 	                }//czarne matuja bialego
 	            }
@@ -78,6 +83,8 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 					{
 					best.x.pos1=-1000;
 	                best.x.pos2=-1000;
+							zniszcz(&head);
+                    zniszcz(&head2);	
 	                return best;
 					}
 				}
@@ -86,6 +93,8 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 	                best.x.pos1=100;
 	                best.x.pos2=100;
 					best.value=0;
+			    		zniszcz(&head);
+                    zniszcz(&head2);
 	                return best;
 	            }
 	        }
