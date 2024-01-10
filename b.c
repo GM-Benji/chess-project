@@ -1,6 +1,17 @@
+void zniszcz(element* head)
+{
+    if (head)
+    {
+        zniszcz(head->nastepny);
+        free(head);
+    }
+}
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 void drawBoard(char board[8][8])
 {
     for(int i=0; i < 8; i++)
