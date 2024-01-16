@@ -49,6 +49,7 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 	for(;head;head=head->nastepny)
 	{
 		move temp=head->ruch;
+		set copyGame=game;
 		char rev1=game.board[digi(temp.pos2,0)][digi(temp.pos2,1)];
 
         // WYKONANIE RUCHOW
@@ -76,7 +77,8 @@ bestReturn engine(set game,int color,int d)//d glebokosc
                 else game.board[7][digi(temp.pos1,1)] = 'r'; // czarne
             }
 		}
-		else if(digi(temp.pos1,1)-digi(temp.pos2,1)==-2 && (game.board[digi(temp.pos1,0)][temp.pos1,1] == 'K' || game.board[digi(temp.pos1,0)][temp.pos1,1] == 'k')//roszada krotka
+		else if(digi(temp.pos1,1)-digi(temp.pos2,1)==-2 && 
+		(game.board[digi(temp.pos1,0)][temp.pos1,1] == 'K' || game.board[digi(temp.pos1,0)][temp.pos1,1] == 'k'))//roszada krotka
         {
             if(color) // biale
             {
@@ -87,13 +89,14 @@ bestReturn engine(set game,int color,int d)//d glebokosc
             }
             else // czarne
             {
-                game.board[1][digi(temp.pos2,1)] = 'K';
-                game.board[1][digi(temp.pos2,1)-1] = 'R';
+                game.board[1][digi(temp.pos2,1)] = 'k';
+                game.board[1][digi(temp.pos2,1)-1] = 'r';
                 game.board[1][7]='#';
                 game.board[1][4]='#';
             }
         }
-        else if(digi(temp.pos1,1)-digi(temp.pos2,1)==2 && (game.board[digi(temp.pos1,0)][temp.pos1,1] == 'K' || game.board[digi(temp.pos1,0)][temp.pos1,1] == 'k')//roszada dluga
+        else if(digi(temp.pos1,1)-digi(temp.pos2,1)==2 && 
+		(game.board[digi(temp.pos1,0)][temp.pos1,1] == 'K' || game.board[digi(temp.pos1,0)][temp.pos1,1] == 'k'))//roszada dluga
         {
             if(color) // biale
             {
@@ -115,7 +118,7 @@ bestReturn engine(set game,int color,int d)//d glebokosc
             game.board[digi(temp.pos1,0)][digi(temp.pos1,1)] = '#'; // czysci pos1
             game.board[digi(temp.pos2,0)][digi(temp.pos1,1)] = '#'; // juz wiadomo ze to bicie w przelocie wiec usuwa zbijanego pionka
             if(color) game.board[digi(temp.pos2,0)][digi(temp.pos2,1)] = 'P';// bialy bije
-            else game.board[digi(temp.pos2,0)][digi(temp.pos2,1)] = 'p'// czarne
+            else game.board[digi(temp.pos2,0)][digi(temp.pos2,1)] = 'p';// czarne
         }
 		else // stadardowy ruch
         {
@@ -194,19 +197,20 @@ bestReturn engine(set game,int color,int d)//d glebokosc
                 {
                     current.value=tempValue;
                 }
-		}
+			}
 		game.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] = game.board[digi(temp2.pos2,0)][digi(temp2.pos2,1)];//cofniecie posuniecia
 		game.board[digi(temp2.pos2,0)][digi(temp2.pos2,1)] = rev;
 		}
 		game.board[digi(temp.pos1,0)][digi(temp.pos1,1)] = game.board[digi(temp.pos2,0)][digi(temp.pos2,1)];//cofniecie posuniecia
 		game.board[digi(temp.pos2,0)][digi(temp.pos2,1)] = rev1;
+	
 	   printf("## %d %d %d\n",current.x.pos1,current.x.pos2,current.value);
 	   if(current.value>best.value && color) best=current;
        if(current.value<best.value && !color) best=current;
        zniszcz(head2);
 	}
 	zniszcz(head);
-	printf("%d %d %d\n",best.x.pos1,best.x.pos2,best.value);
+	//printf("%d %d %d\n",best.x.pos1,best.x.pos2,best.value);
 	return best;
 }
 void main()
