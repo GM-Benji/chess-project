@@ -264,7 +264,7 @@ int ifLegal(int color, move x, char board[8][8])//color: 0-czarny, 1-bialy
 	}
 	return 1;
 }
-void moveMaker(char board[8][8], move thisMove) //funkcja to wykonania ruchu ze sprawdzaniem czy jest mozliwy NIEKOMPLETNA
+/*void moveMaker(char board[8][8], move thisMove) //funkcja to wykonania ruchu ze sprawdzaniem czy jest mozliwy NIEKOMPLETNA
 {
     //if(isLegal(board, thisMove));
 
@@ -292,7 +292,7 @@ void moveMaker(char board[8][8], move thisMove) //funkcja to wykonania ruchu ze 
             }
         } while(isOkey == 0);
     }
-}
+}nie korzystamy z tego*/
 int ifCastle(char board[8][8],int color,move x)//0 nie mozna roszady, 1- mozna roszade
 {
 	if(x.pos1<x.pos2)//krotka roszada
@@ -398,4 +398,108 @@ int ifEnPassant(set game, int color, move ruch) // usunac te elementy z generato
         if(isCheck(copyBoard, color)) return 0;
     }
     return 1;
+}
+move typeMove(set game) //najnowszy
+{
+    char kolumny[8] = {'a','b','c','d','e','f','g','h'}; //tablice pomocnicze do porownania z inputem
+    char wiersze[8] = {'8', '7', '6', '5', '4', '3', '2', '1'};
+
+    move conv; //na to skonwertowane
+    conv.pos1 = NULL;
+    conv.pos2 = NULL;
+
+    printf("    it's your turn to make a move\n");
+
+    element *moveOptions=generate(game,1); //pobiera ruchy z generatora do porownania
+    moveOptions=moveOptions->nastepny;
+
+    int isInputOk; //zmienna ktora pomoga sprawdzic czy input jest poprawnie wpisany
+    do
+    {
+        isInputOk = 1;
+        conv.pos1 = NULL;
+        conv.pos2 = NULL;
+        char takeMove[5];
+        printf("(np. g8-f6) >> ");
+        scanf("%s", takeMove);
+
+        int isOkey0=0, isOkey1=0, isOkey3=0, isOkey4=0;
+
+        for(int i=0; i<8 && (isOkey0 == 0 || isOkey1 == 0 || isOkey3 == 0 || isOkey4 == 0); i++) //petla leci po calej kolumny i wiersze oraz jezeli wszystko zostalo przekonwertowane poprawnie to wszyskie isOkey zmieniaja sie na 1
+        {
+            if(isOkey0 == 0 && takeMove[0] == kolumny[i])
+            {
+                conv.pos1 += i;
+                isOkey0=1;
+            }
+            if(isOkey1 == 0 && takeMove[1] == wiersze[i])
+            {
+                conv.pos1 += i*10;
+                isOkey1=1;
+            }
+            if(isOkey3 == 0 && takeMove[3] == kolumny[i])
+            {
+                conv.pos2 += i;
+                isOkey3=1;
+            }
+            if(isOkey4 == 0 && takeMove[4] == wiersze[i])
+            {
+                conv.pos2 += i*10;
+                isOkey4=1;
+            }
+        }
+        printf("ruch to: %d %d\n", conv.pos1, conv.pos2);
+
+        if(isOkey0 == 0 || isOkey1 == 0 || isOkey3 == 0 || isOkey4 == 0) // jezeli cos nie zostalo zmienione to cos zostalo zle wpisane
+        {
+            printf("invalid input notation\n");
+            isInputOk = 0;
+        }
+        else // jezeli zostalo wpisane dobrze to wypisuje ze teraz sie dzieje analiza planszy, zmienia isInputOk i nie robi petli jeszcze raz
+        {
+            int checker=0;
+            if(digi(conv.pos1,0)==1 && digi(conv.pos2,0)==0 && game.board[digi(conv.pos1,0)][digi(conv.pos1,1)]=='P')//dla promocji osobno
+            {
+                for(; moveOptions; moveOptions=moveOptions->nastepny)
+                if(moveOptions->ruch.pos1 == moveOptions->ruch.pos2 && digi(conv.pos1,1) == digi(moveOptions->ruch.pos1, 1)) checker=1; //czy z generatora jest ruch np z 10 na 10 i sprawdzic czy to pionek w teju kolumnie <<to chyba juz<<<<<<
+
+                char newPiece[1];
+                int isOkey=0;
+                do //wpisanie nowej figury w promocji
+                {
+                    printf("choose piece: Q/R/B/N\n");
+                    scanf("%s", newPiece);
+                    if(newPiece[0] == 'Q' || newPiece[0] == 'R' || newPiece[0] == 'B' || newPiece[0] == 'N')
+                    {
+                        isOkey=1;
+                        game.board[digi(conv.pos2, 0)][digi(conv.pos2, 1)] = newPiece[0];
+                    }
+                    else
+                        printf("invalid new piece\n");
+                }while(isOkey=0);
+            }
+            else
+            {
+                for(; moveOptions; moveOptions=moveOptions->nastepny)
+                if(moveOptions->ruch.pos1 == conv.pos1 && moveOptions->ruch.pos2 == conv.pos2) checker=1;
+            }
+
+            if(checker==0) // tu musi byæ warunek ze jezeli ruch jest niemozliwy bo gracz jest szacha albo po drodze ruchu coœ stoi
+            {
+                if(takeMove=="cancel") printf("Move canceled\n");
+                else printf("You cant make this move\n");
+                isInputOk = 0;
+            }
+            else
+            {
+                printf("pricessing the move..\n");
+                isInputOk = 1;
+            }
+        }
+        //printf("%d | %d\n", conv.pos1, conv.pos2);
+    } while(isInputOk == 0); // jezeli cos nie zostalo zmienione to powtarza wpisywanie
+    //printf("\n%d\n", isInputOk);
+
+    //moveMaker(board, conv);
+    return conv;
 }
