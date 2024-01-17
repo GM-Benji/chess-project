@@ -53,11 +53,22 @@ element* utworz(move ruch, element* head)
 		return ptr;
 	}
 }
+/*void zniszcz(element** head)
+{
+	if(!*head)return;
+	zniszcz(&((*head)->nastepny));
+	free(*head);
+	free(head);
+}*/
 void zniszcz(element* head)
 {
-	if(head->nastepny)zniszcz(head->nastepny);
-	free(head);
+    if (head)
+    {
+        zniszcz(head->nastepny);
+        free(head);
+    }
 }
+
 void showL(element* head)
 {
 	while(head!=NULL)
@@ -258,6 +269,7 @@ char *substr(move x,char board[8][8])
 
 int isWay(char *str)
 {
+	int l=strlen(str);
 	if(*str=='#')//jezeli str jest odwrocony to wstawia # na koniec
 	{
 		int counter=0;
@@ -271,7 +283,7 @@ int isWay(char *str)
 		str-=(counter-1);
 	}
 	str++;
-	while(helper(*str))
+	for(int i=0;i<l-2;i++)
 	{
 		if(*str!='#')return 0;
 		str++;
@@ -368,13 +380,14 @@ int isCheck(char board[8][8],int color)//1- jest szach, 0- nie ma szacha
 		x8=(move){.pos1=posK,.pos2=72+r2};//od krola do lewego dolnego
 	}
 	move X[8]={x1,x2,x3,x4,x5,x6,x7,x8};
-	char *tempStr;
+	//char *tempStr=substr(X[i],board);
 	int d=0;//kierunek po liniach
 	for(int i=0;i<8;i++)
 	{
 		//printf("%d %d\n",X[i].pos1,X[i].pos2);
-		tempStr=calloc(9,sizeof(char));
-		tempStr=substr(X[i],board);
+		//tempStr=calloc(9,sizeof(char));
+		//tempStr=substr(X[i],board);
+		char *tempStr=substr(X[i],board);
 		if(i>3)d=1;//kierunek po diagonalach
 		if(checkStrForCheck(tempStr,d)==1 && color)
 		{
@@ -386,8 +399,9 @@ int isCheck(char board[8][8],int color)//1- jest szach, 0- nie ma szacha
 			free(tempStr);
 			return 1;
 		}
+		free(tempStr);
 	}
-	free(tempStr);
+	
 	
 	return 0;
 }
@@ -397,6 +411,7 @@ int ifLegal(int color, move x, char board[8][8])//color: 0-czarny, 1-bialy
 	if(brd(x.pos2,board)=='k' || brd(x.pos2,board)=='K')return 0;//bicie krola
 	if(x.pos1<0 || x.pos1>77 || digi(x.pos1,2)>7)return 0;//czy jest w szachownicy
 	if(x.pos2<0 || x.pos2>77 || digi(x.pos2,2)>7)return 0;
+	if((brd(x.pos1,board)=='k' || brd(x.pos1,board)=='K')&& abs(digi(x.pos2,1)-digi(x.pos1,1))==2)return 0;
 	if((brd(x.pos1,board)=='p' && (x.pos2-x.pos1)==20) && (digi(x.pos1,0)!=1))return 0;//pionki ruszaja sie o 2 tylko jak sie nie ruszyly wczesniej
 	if((brd(x.pos1,board)=='P' && (x.pos1-x.pos2)==20) && (digi(x.pos1,0)!=6))return 0;
 	if(( brd(x.pos1,board)=='p' || brd(x.pos1,board)=='P') && digi(x.pos1,1)!=digi(x.pos2,1) && brd(x.pos2,board)=='#')return 0;//pionek bije tylko kiedy ma co bic
@@ -404,17 +419,20 @@ int ifLegal(int color, move x, char board[8][8])//color: 0-czarny, 1-bialy
 	int t=(int)brd(x.pos2,board);//czy bije kolor przeciwnika
 	if((t<=90 && t!=35) && color)return 0;
 	if(t>90 && !color)return 0;
+	//printf("rncj");
 	if(brd(x.pos1,board)!='n' && brd(x.pos1,board)!='N')
 	{
 		char *str=calloc(8,sizeof(char));//sprawdzanie czy nie ma nic pomiedzy
 		str=substr(x,board);
 		if(!isWay(str))
 		{
+			//printf("%s",str);
 			free(str);
 			return 0;
 		}
 		free(str);
 	}
+	
 	char copyBoard[8][8];
 	strcpy(copyBoard,board);
 	copyBoard[digi(x.pos2,0)][digi(x.pos2,1)]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];//sprawdzanie czy nie ma szacha po wykonaniu posuniecia
@@ -447,8 +465,8 @@ set setInit(char board[8][8])
     game.movedBlackPawns = 0;
     for(int i=0; i<3; i++)
     {
-        game.movedWhiteCastle[i] = 0;//0 nie ruszone, 1 ruszone
-        game.movedBlackCastle[i] = 0;
+        game.movedWhiteCastle[i] = 1;//0 nie ruszone, 1 ruszone
+        game.movedBlackCastle[i] = 1;
     }
 	return game;
 }
@@ -458,16 +476,33 @@ int ifCastle(char board[8][8],int color,move x)//0 nie mozna roszady, 1- mozna r
 	{
 		char *str=calloc(8,sizeof(char));
 		str=substr(x,board);
-		if(!isWay(str))return 0;
-		if(isCheck(board,color))return 0;
+		if(!isWay(str))
+		{
+		    free(str);
+		    return 0;
+		}
+		if(isCheck(board,color))
+        {
+		    free(str);
+		    return 0;
+		}
 		char copyBoard[8][8];
 		strcpy(copyBoard,board);
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
 		copyBoard[digi(x.pos2,0)][digi(x.pos2,1)]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)+1]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
+		free(str);
 		return 1;
 	}
 	else//dluga roszada
@@ -475,16 +510,33 @@ int ifCastle(char board[8][8],int color,move x)//0 nie mozna roszady, 1- mozna r
 		char *str=calloc(8,sizeof(char));
 		x.pos2--;
 		str=substr(x,board);
-		if(!isWay(str))return 0;
-		if(isCheck(board,color))return 0;
+		if(!isWay(str))
+        {
+		    free(str);
+		    return 0;
+		}
+		if(isCheck(board,color))
+		{
+		    free(str);
+		    return 0;
+		}
 		char copyBoard[8][8];
 		strcpy(copyBoard,board);
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-2]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1];
 		copyBoard[digi(x.pos1,0)][digi(x.pos1,1)-1]='#';
-		if(isCheck(copyBoard,color))return 0;
+		if(isCheck(copyBoard,color))
+		{
+		    free(str);
+		    return 0;
+		}
+		free(str);
 		return 1;
 	}
 }
