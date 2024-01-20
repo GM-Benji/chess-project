@@ -79,7 +79,7 @@ bestReturn engine(set game,int color,int d)//d glebokosc
             }
 		}
 		else if(digi(temp.pos1,1)-digi(temp.pos2,1)==-2 && 
-		(copyGame.board[digi(temp.pos1,0)][temp.pos1,1] == 'K' || copyGame.board[digi(temp.pos1,0)][temp.pos1,1] == 'k'))//roszada krotka
+		(copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'K' || copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'k'))//roszada krotka
         {
             if(color) // biale
             {
@@ -99,7 +99,7 @@ bestReturn engine(set game,int color,int d)//d glebokosc
             }
         }
         else if(digi(temp.pos1,1)-digi(temp.pos2,1)==2 && 
-		(copyGame.board[digi(temp.pos1,0)][temp.pos1,1] == 'K' || copyGame.board[digi(temp.pos1,0)][temp.pos1,1] == 'k'))//roszada dluga
+		(copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'K' || copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'k'))//roszada dluga
         {
             if(color) // biale
             {
@@ -118,9 +118,9 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 				copyGame.movedBlackCastle[1]=1;
             }
         }
-        else if((copyGame.board[digi(temp.pos1,0)][temp.pos1,1] == 'P' || 
-		copyGame.board[digi(temp.pos1,0)][temp.pos1,1] == 'p') 
-		&& copyGame.board[digi(temp.pos1,0)][temp.pos1,1] == '#') // bicie w przelocie - rozpoznanie bicia w przelocie jest wtedy gdy na pos 2 jest # (puste)
+        else if((copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'P' || 
+		copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'p') 
+		&& copyGame.board[digi(temp.pos2,0)][digi(temp.pos2,1)] == '#' && digi(temp.pos1,1)!=digi(temp.pos2,1)) // bicie w przelocie - rozpoznanie bicia w przelocie jest wtedy gdy na pos 2 jest # (puste)
         {
             copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] = '#'; // czysci pos1
             copyGame.board[digi(temp.pos1,0)][digi(temp.pos2,1)] = '#'; // juz wiadomo ze to bicie w przelocie wiec usuwa zbijanego pionka
@@ -140,7 +140,6 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 			else if(brd(temp.pos1,copyGame.board)=='p' && abs(digi(temp.pos1,0)-digi(temp.pos2,0))==2)copyGame.movedBlackPawns=digi(temp.pos1,1);//pionki ruszają się o 2 pola
 			else if(brd(temp.pos1,copyGame.board)=='P' && abs(digi(temp.pos1,0)-digi(temp.pos2,0))==2)copyGame.movedWhitePawns=digi(temp.pos1,1);//pionki ruszają się o 2 pola
         }
-
         element *head2 = malloc(sizeof(element));
 	    head2 = generate(copyGame,!color);
 		//showL(head2->nastepny);
@@ -220,7 +219,7 @@ bestReturn engine(set game,int color,int d)//d glebokosc
             }
 		}
 		else if(digi(temp2.pos1,1)-digi(temp2.pos2,1)==-2 && 
-		(copyGame2.board[digi(temp2.pos1,0)][temp2.pos1,1] == 'K' || copyGame2.board[digi(temp2.pos1,0)][temp2.pos1,1] == 'k'))//roszada krotka
+		(copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'K' || copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'k'))//roszada krotka
         {
             if(color) // biale
             {
@@ -240,7 +239,7 @@ bestReturn engine(set game,int color,int d)//d glebokosc
             }
         }
         else if(digi(temp2.pos1,1)-digi(temp2.pos2,1)==2 && 
-		(copyGame2.board[digi(temp2.pos1,0)][temp2.pos1,1] == 'K' || copyGame2.board[digi(temp2.pos1,0)][temp2.pos1,1] == 'k'))//roszada dluga
+		(copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'K' || copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'k'))//roszada dluga
         {
             if(color) // biale
             {
@@ -259,9 +258,9 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 				copyGame2.movedBlackCastle[1]=1;
             }
         }
-        else if((copyGame2.board[digi(temp2.pos1,0)][temp2.pos1,1] == 'P' || 
-		copyGame2.board[digi(temp2.pos1,0)][temp2.pos1,1] == 'p') 
-		&& copyGame2.board[digi(temp2.pos1,0)][temp2.pos1,1] == '#') // bicie w przelocie - rozpoznanie bicia w przelocie jest wtedy gdy na pos 2 jest # (puste)
+        else if((copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'P' || 
+		copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'p') 
+		&& copyGame2.board[digi(temp2.pos2,0)][digi(temp2.pos2,1)] == '#') // bicie w przelocie - rozpoznanie bicia w przelocie jest wtedy gdy na pos 2 jest # (puste)
         {
             copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] = '#'; // czysci pos1
             copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos2,1)] = '#'; // juz wiadomo ze to bicie w przelocie wiec usuwa zbijanego pionka
@@ -281,7 +280,7 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 			else if(brd(temp2.pos1,copyGame2.board)=='p' && abs(digi(temp2.pos1,0)-digi(temp2.pos2,0))==2)copyGame2.movedBlackPawns=digi(temp2.pos1,1);//pionki ruszają się o 2 pola
 			else if(brd(temp2.pos1,copyGame2.board)=='P' && abs(digi(temp2.pos1,0)-digi(temp2.pos2,0))==2)copyGame2.movedWhitePawns=digi(temp2.pos1,1);//pionki ruszają się o 2 pola
         }
-            drawBoard(copyGame2.board);
+            //drawBoard(copyGame2.board);
             if(d)
             {
                 bestReturn t=engine(copyGame2,color,d-1);
