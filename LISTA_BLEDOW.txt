@@ -1,4 +1,5 @@
 BŁĘDY KTÓRE ZNALAZŁEM:
 - coś sie dziwnego dzieje ze skoczkami jak sie przejdzie powyzej wiersza nr4
     miałem takie przypadki: goniec zniknął, goniec zamiast: przejść 2 do przodu i jeden w prawo; zrobił ruch: 2 w lewo i jeden do przodu
+- cos nie tak z wygenerowanymi ruchami lub w porownywaniu ich z wpisywanym ruchem, bo nie moglem ruszyc lewego gonca na pole h6
 - engine podaje pierwszy ruch z generatora zamiast najlepszego
