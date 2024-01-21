@@ -1,0 +1,3 @@
+BŁĘDY KTÓRE ZNALAZŁEM:
+- coś sie dziwnego dzieje ze skoczkami jak sie przejdzie powyzej wiersza nr4
+- engine podaje pierwszy ruch z generatora zamiast najlepszego
