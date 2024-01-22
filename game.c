@@ -134,9 +134,9 @@ arrType init()
 	return moves;
 }
 
-int evaluate(char board[8][8])
+double evaluate(char board[8][8])
 {
-	int value = 0;
+	double value = 0.0;
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
@@ -144,34 +144,36 @@ int evaluate(char board[8][8])
 			switch (board[i][j])
 			{
 			case 'N':
-				value += 3;
+				value += 3.0;
 				break;
 			case 'Q':
-				value += 9;
+				value += 9.0;
 				break;
 			case 'P':
-				value += 1;
+				value += 1.0;
+				if(i!=0 && i!=7)value +=(6-i)*0.3;
 				break;
 			case 'B':
-				value += 3;
+				value += 3.0;
 				break;
 			case 'R':
-				value += 5;
+				value += 5.0;
 				break;
 			case 'n':
-				value -= 3;
+				value -= 3.0;
 				break;
 			case 'q':
-				value -= 9;
+				value -= 9.0;
 				break;
 			case 'p':
-				value -= 1;
+				value -= 1.0;
+				if(i!=0 && i!=7)value -=(-1+i)*0.3;
 				break;
 			case 'b':
-				value -= 3;
+				value -= 3.0;
 				break;
 			case 'r':
-				value -= 5;
+				value -= 5.0;
 				break;
 			}
 		}
@@ -465,8 +467,8 @@ set setInit(char board[8][8])
     game.movedBlackPawns = 0;
     for(int i=0; i<3; i++)
     {
-        game.movedWhiteCastle[i] = 1;//0 nie ruszone, 1 ruszone
-        game.movedBlackCastle[i] = 1;
+        game.movedWhiteCastle[i] = 0;//0 nie ruszone, 1 ruszone
+        game.movedBlackCastle[i] = 0;
     }
 	return game;
 }
@@ -579,7 +581,7 @@ element* generate(set game,int color)
     // zerowanie zmiennych do bicia w przelocie z poprzedniego ruchu -1 oznacza ze zaden pionek danego koloru nie ruszyl sie w poprzednim ruchu o 2 pola
     if(color) game.movedWhitePawns = -1;
     if(!color) game.movedBlackPawns = -1;
-    game.movedBlackPawns = 6;
+    //game.movedBlackPawns = 6;
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -715,12 +717,14 @@ element* generate(set game,int color)
                     ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[5][k]};
 					if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==-2)//roszada krotka
 					{
-						if(color && game.movedWhiteCastle[1]==0 && game.movedWhiteCastle[2]==0 && ifCastle(game.board,color,ruch))
+						if(color && game.movedWhiteCastle[1]==0 && game.movedWhiteCastle[2]==0 && ifCastle(game.board,color,ruch)&&
+						brd(74,game.board)=='K' && brd(77,game.board)=='R')
 						{
 							utworz(ruch,head);
 							continue;
 						}
-						if(!color && game.movedBlackCastle[1]==0 && game.movedBlackCastle[2]==0 && ifCastle(game.board,!color,ruch))
+						if(!color && game.movedBlackCastle[1]==0 && game.movedBlackCastle[2]==0 && ifCastle(game.board,!color,ruch) &&
+						brd(4,game.board)=='k' && brd(7,game.board)=='r')
 						{
 							utworz(ruch,head);
 							continue;
@@ -728,12 +732,14 @@ element* generate(set game,int color)
 					}
 					if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==2)//roszada dluga
 					{
-						if(color && game.movedWhiteCastle[0]==0 && game.movedWhiteCastle[1]==0 && ifCastle(game.board,color,ruch))
+						if(color && game.movedWhiteCastle[0]==0 && game.movedWhiteCastle[1]==0 && ifCastle(game.board,color,ruch) &&
+						brd(74,game.board)=='K' && brd(70,game.board)=='R')
 						{
 							utworz(ruch,head);
 							continue;
 						}
-						if(!color && game.movedBlackCastle[0]==0 && game.movedBlackCastle[1]==0 && ifCastle(game.board,!color,ruch))
+						if(!color && game.movedBlackCastle[0]==0 && game.movedBlackCastle[1]==0 && ifCastle(game.board,!color,ruch) &&
+						brd(4,game.board)=='k' && brd(0,game.board)=='r')
 						{
 							utworz(ruch,head);
 							continue;
