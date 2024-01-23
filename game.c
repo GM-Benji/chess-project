@@ -26,6 +26,7 @@ void drawBoard(char board[8][8])
 typedef struct move {
 	int pos1;
 	int pos2;
+	char promotion;
 }move;
 typedef struct element {
 	move ruch;
@@ -53,13 +54,6 @@ element* utworz(move ruch, element* head)
 		return ptr;
 	}
 }
-/*void zniszcz(element** head)
-{
-	if(!*head)return;
-	zniszcz(&((*head)->nastepny));
-	free(*head);
-	free(head);
-}*/
 void zniszcz(element* head)
 {
     if (head)
@@ -68,7 +62,6 @@ void zniszcz(element* head)
         free(head);
     }
 }
-
 void showL(element* head)
 {
 	while(head!=NULL)
@@ -81,7 +74,6 @@ typedef struct arrType
 {
 	int arr[6][32];
 }arrType;
-
 arrType init()
 {
 	arrType moves;
@@ -133,53 +125,6 @@ arrType init()
 	moves.arr[5][9] = 2;
 	return moves;
 }
-
-double evaluate(char board[8][8])
-{
-	double value = 0.0;
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			switch (board[i][j])
-			{
-			case 'N':
-				value += 3.0;
-				break;
-			case 'Q':
-				value += 9.0;
-				break;
-			case 'P':
-				value += 1.0;
-				if(i!=0 && i!=7)value +=(6-i)*0.3;
-				break;
-			case 'B':
-				value += 3.0;
-				break;
-			case 'R':
-				value += 5.0;
-				break;
-			case 'n':
-				value -= 3.0;
-				break;
-			case 'q':
-				value -= 9.0;
-				break;
-			case 'p':
-				value -= 1.0;
-				if(i!=0 && i!=7)value -=(-1+i)*0.3;
-				break;
-			case 'b':
-				value -= 3.0;
-				break;
-			case 'r':
-				value -= 5.0;
-				break;
-			}
-		}
-	}
-	return value;
-}
 int digi(int x, int i)//zwraca pierwszą współrzędną dla i=0 i drugą dla i=1 np digi(54,0)=5 i digi(54,1)=4
 {
 	int t1 = x % 10;
@@ -198,13 +143,11 @@ int helper(char x)
 }
 char brd(int x, char board[8][8])
 {
-	//printf("%d:%c ",x,board[digi(x,0)][digi(x,1)]);
 	if(x>77||x<0)return '\0';
 	return board[digi(x,0)][digi(x,1)];
 }
 char *substr(move x,char board[8][8])
 {
-	
 	int temp=abs(digi(x.pos1,0)-digi(x.pos2,0));//przesuniecie na wierszach
 	if(abs(digi(x.pos1,1)-digi(x.pos2,1))>temp)temp=abs(digi(x.pos1,1)-digi(x.pos2,1));//przesuniecie na kolumnach
 	char *str=calloc(9,sizeof(char));
@@ -268,7 +211,6 @@ char *substr(move x,char board[8][8])
 
 	return str;
 }
-
 int isWay(char *str)
 {
 	int l=strlen(str);
@@ -305,7 +247,6 @@ int checkStrForCheck(char *strCheck, int direction) //(1 szach na bialym (-1 sza
             strCheck[j] = bufor;
         }
     }
-
     for(int i=1; strCheck[0] == 'k' && i < size; i++) //na pierwszym miejscu string zawsze jest król, więc jego pomijamy ale najpierw trzeba sprawdzic ktory to stad pierwszy warunek w forze
     {
         if(strCheck[i] != '#' )
@@ -382,13 +323,9 @@ int isCheck(char board[8][8],int color)//1- jest szach, 0- nie ma szacha
 		x8=(move){.pos1=posK,.pos2=72+r2};//od krola do lewego dolnego
 	}
 	move X[8]={x1,x2,x3,x4,x5,x6,x7,x8};
-	//char *tempStr=substr(X[i],board);
 	int d=0;//kierunek po liniach
 	for(int i=0;i<8;i++)
 	{
-		//printf("%d %d\n",X[i].pos1,X[i].pos2);
-		//tempStr=calloc(9,sizeof(char));
-		//tempStr=substr(X[i],board);
 		char *tempStr=substr(X[i],board);
 		if(i>3)d=1;//kierunek po diagonalach
 		if(checkStrForCheck(tempStr,d)==1 && color)
@@ -403,8 +340,6 @@ int isCheck(char board[8][8],int color)//1- jest szach, 0- nie ma szacha
 		}
 		free(tempStr);
 	}
-	
-	
 	return 0;
 }
 
@@ -421,20 +356,17 @@ int ifLegal(int color, move x, char board[8][8])//color: 0-czarny, 1-bialy
 	int t=(int)brd(x.pos2,board);//czy bije kolor przeciwnika
 	if((t<=90 && t!=35) && color)return 0;
 	if(t>90 && !color)return 0;
-	//printf("rncj");
 	if(brd(x.pos1,board)!='n' && brd(x.pos1,board)!='N')
 	{
 		char *str=calloc(8,sizeof(char));//sprawdzanie czy nie ma nic pomiedzy
 		str=substr(x,board);
 		if(!isWay(str))
 		{
-			//printf("%s",str);
 			free(str);
 			return 0;
 		}
 		free(str);
 	}
-	
 	char copyBoard[8][8];
 	strcpy(copyBoard,board);
 	copyBoard[digi(x.pos2,0)][digi(x.pos2,1)]=copyBoard[digi(x.pos1,0)][digi(x.pos1,1)];//sprawdzanie czy nie ma szacha po wykonaniu posuniecia
@@ -474,6 +406,8 @@ set setInit(char board[8][8])
 }
 int ifCastle(char board[8][8],int color,move x)//0 nie mozna roszady, 1- mozna roszade
 {
+	if(digi(x.pos1,0)+digi(x.pos2,0)!=14 && color)return 0;
+	if(digi(x.pos1,0)+digi(x.pos2,0)!=0 && !color)return 0;
 	if(x.pos1<x.pos2)//krotka roszada
 	{
 		char *str=calloc(8,sizeof(char));
@@ -581,8 +515,6 @@ element* generate(set game,int color)
     // zerowanie zmiennych do bicia w przelocie z poprzedniego ruchu -1 oznacza ze zaden pionek danego koloru nie ruszyl sie w poprzednim ruchu o 2 pola
     if(color) game.movedWhitePawns = -1;
     if(!color) game.movedBlackPawns = -1;
-    //game.movedBlackPawns = 6;
-
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
@@ -613,17 +545,13 @@ element* generate(set game,int color)
 					{
 					    if(digi(ruch.pos1, 0) == 1)
 						{
-						    int temp = ruch.pos1;
-                            ruch.pos1 = ruch.pos2;
+						    ruch.promotion='Q';
                             utworz(ruch, head); //promocja na hetmana np. 4 do 4
-                            ruch.pos1 = temp;
-                            ruch.pos2 = temp;
+                            ruch.promotion='N';
                             utworz(ruch, head); //promocja na skoczka np. 14 do 14
-							ruch.pos1 += 10;
-                            ruch.pos2 += 10;
+							ruch.promotion='B';
 							utworz(ruch, head); //promocja na gonca np. 24 do 24
-							ruch.pos1 += 10;
-                            ruch.pos2 += 10;
+							ruch.promotion='R';
 							utworz(ruch, head); //promocja na wieze 34 do 34
 						}
 						else utworz(ruch,head);
@@ -646,17 +574,13 @@ element* generate(set game,int color)
 					{
 						if(digi(ruch.pos2, 0) == 7)
 						{
-						    int temp = ruch.pos1;
-                            ruch.pos1 = ruch.pos2;
+							ruch.promotion='q';
                             utworz(ruch, head); //promocja na hetmana np. 74 do 74
-                            ruch.pos1 = temp;
-                            ruch.pos2 = temp;
+							ruch.promotion='n';
                             utworz(ruch, head); //promocja na skoczka np. 64 do 64
-							ruch.pos1-=10;
-							ruch.pos2-=10;
+							ruch.promotion='b';
 							utworz(ruch, head); //promocja na gonca np. 54 do 54
-							ruch.pos1-=10;
-							ruch.pos2-=10;
+							ruch.promotion='r';
 							utworz(ruch, head); //promocja na wieze np. 44 do 44
 						}
 						else utworz(ruch,head);
@@ -715,7 +639,7 @@ element* generate(set game,int color)
                 for(int k=0; k < 10; k++)
                 {
                     ruch=(move){.pos1=i*10+j,.pos2=i*10+j+moves.arr[5][k]};
-					if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==-2)//roszada krotka
+					if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==-2 && (digi(ruch.pos1,0)==0 || digi(ruch.pos1,0)==7))//roszada krotka
 					{
 						if(color && game.movedWhiteCastle[1]==0 && game.movedWhiteCastle[2]==0 && ifCastle(game.board,color,ruch)&&
 						brd(74,game.board)=='K' && brd(77,game.board)=='R')
@@ -730,7 +654,7 @@ element* generate(set game,int color)
 							continue;
 						}
 					}
-					if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==2)//roszada dluga
+					if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==2 && (digi(ruch.pos1,0)==0 || digi(ruch.pos1,0)==7))//roszada dluga
 					{
 						if(color && game.movedWhiteCastle[0]==0 && game.movedWhiteCastle[1]==0 && ifCastle(game.board,color,ruch) &&
 						brd(74,game.board)=='K' && brd(70,game.board)=='R')
@@ -754,4 +678,133 @@ element* generate(set game,int color)
 		}
 	}
 	return head;
+}
+set moveMaker(set game, move ruch)
+{
+
+    // WYKONANIE RUCHOW
+		if((digi(ruch.pos2,0)==0 || digi(ruch.pos2,0)==7)&&(brd(ruch.pos1,game.board)=='p' || brd(ruch.pos1,game.board)=='P')) //promocja pionka
+		{
+		    game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)]='#';
+		    game.board[digi(ruch.pos2,0)][digi(ruch.pos2,1)]=ruch.promotion;
+		}
+		else if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==-2 &&
+		(game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'K' || game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'k'))//roszada krotka
+        {
+            if(ruch.pos1>69) // biale
+            {
+                game.board[7][digi(ruch.pos2,1)] = 'K';
+                game.board[7][digi(ruch.pos2,1)-1] = 'R';
+                game.board[7][7]='#'; // czysci pole na ktorym stal krol
+                game.board[7][4]='#'; // czysci pole na ktorym stala wieza
+				game.movedWhiteCastle[1]=1;
+            }
+            else if(ruch.pos1<8) // czarne
+            {
+                game.board[1][digi(ruch.pos2,1)] = 'k';
+                game.board[1][digi(ruch.pos2,1)-1] = 'r';
+                game.board[1][7]='#';
+                game.board[1][4]='#';
+				game.movedBlackCastle[1]=1;
+            }
+        }
+        else if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==2 &&
+		(game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'K' || game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'k'))//roszada dluga
+        {
+            if(ruch.pos1>69) // biale
+            {
+                game.board[7][digi(ruch.pos2,1)] = 'K';
+                game.board[7][digi(ruch.pos2,1)+1] = 'R';
+                game.board[7][0]='#';
+                game.board[7][4]='#';
+				game.movedWhiteCastle[1]=1;
+            }
+            else if(ruch.pos1<8)// czarne
+            {
+                game.board[0][digi(ruch.pos2,1)] = 'k';
+                game.board[0][digi(ruch.pos2,1)+1] = 'r';
+                game.board[0][0]='#';
+                game.board[0][4]='#';
+				game.movedBlackCastle[1]=1;
+            }
+        }
+        else if((game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'P' ||
+		game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'p')
+		&& game.board[digi(ruch.pos2,0)][digi(ruch.pos2,1)] == '#' && digi(ruch.pos1,1)!=digi(ruch.pos2,1)) // bicie w przelocie - rozpoznanie bicia w przelocie jest wtedy gdy na pos 2 jest # (puste)
+        {
+            game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] = '#'; // czysci pos1
+            game.board[digi(ruch.pos1,0)][digi(ruch.pos2,1)] = '#'; // juz wiadomo ze to bicie w przelocie wiec usuwa zbijanego pionka
+            if(digi(ruch.pos1,0)==3) game.board[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = 'P';// bialy bije
+            else game.board[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = 'p';// czarne
+        }
+		else // stadardowy ruch
+        {
+            game.board[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)];
+            game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] = '#';
+			if(ruch.pos1==0 && game.movedBlackCastle[0]==0 && brd(ruch.pos1,game.board)=='r')game.movedBlackCastle[0]=1;//odbieranie praw do roszady
+			else if(ruch.pos1==7 && game.movedBlackCastle[2]==0 && brd(ruch.pos1,game.board)=='r')game.movedBlackCastle[2]=1;
+			else if(ruch.pos1==4 && game.movedBlackCastle[1]==0 && brd(ruch.pos1,game.board)=='k')game.movedBlackCastle[1]=1;
+			else if(ruch.pos1==70 && game.movedWhiteCastle[0]==0 && brd(ruch.pos1,game.board)=='R')game.movedWhiteCastle[0]=1;
+			else if(ruch.pos1==77 && game.movedWhiteCastle[2]==0 && brd(ruch.pos1,game.board)=='R')game.movedWhiteCastle[2]=1;
+			else if(ruch.pos1==74 && game.movedWhiteCastle[1]==0 && brd(ruch.pos1,game.board)=='K')game.movedWhiteCastle[1]=1;
+			else if(brd(ruch.pos1,game.board)=='p' && abs(digi(ruch.pos1,0)-digi(ruch.pos2,0))==2)game.movedBlackPawns=digi(ruch.pos1,1);//pionki ruszają się o 2 pola
+			else if(brd(ruch.pos1,game.board)=='P' && abs(digi(ruch.pos1,0)-digi(ruch.pos2,0))==2)game.movedWhitePawns=digi(ruch.pos1,1);//pionki ruszają się o 2 pola
+        }
+        return game;
+}
+int len(element *head)
+{
+	int d=0;
+	while(head->nastepny)
+	{
+		head=head->nastepny;
+		d++;
+	}
+	return d;
+}
+double evaluate(set game)
+{
+	double value = 0.0;
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			switch (game.board[i][j])
+			{
+			case 'N':
+				value += 3.0;
+				break;
+			case 'Q':
+				value += 9.0;
+				break;
+			case 'P':
+				value += 1.0;
+				if(i!=0 && i!=7)value +=(6-i)*0.1;
+				break;
+			case 'B':
+				value += 3.0;
+				break;
+			case 'R':
+				value += 5.0;
+				break;
+			case 'n':
+				value -= 3.0;
+				break;
+			case 'q':
+				value -= 9.0;
+				break;
+			case 'p':
+				value -= 1.0;
+				if(i!=0 && i!=7)value -=(-1+i)*0.1;
+				break;
+			case 'b':
+				value -= 3.0;
+				break;
+			case 'r':
+				value -= 5.0;
+				break;
+			}
+		}
+	}
+	return value;
 }
