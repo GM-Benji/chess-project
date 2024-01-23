@@ -2,21 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include "game.c"
-
-
-
 typedef struct bestReturn {
     move x;
     double value;
 }bestReturn;
 bestReturn engine(set game,int color,int d)//d glebokosc
 {
+
 	bestReturn best;
 	bestReturn current;
 	current.value=0.0;
 	best.value=0.0;
 	element *head = malloc(sizeof(element));
-	//printf("%d \n",d);
 	head = generate(game,color);
 	if(!head->nastepny)
 	{
@@ -53,115 +50,23 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 	}
 	head=head->nastepny;
 	best.x=head->ruch;
-	//showL(head);
-	//printf("#######");
+    int counter2=0;
 	for(;head;head=head->nastepny)
 	{
 		move temp=head->ruch;
 		set copyGame=game;
-		//char rev1=copyGame.board[digi(temp.pos2,0)][digi(temp.pos2,1)];
-
         // WYKONANIE RUCHOW
-		if(temp.pos1 == temp.pos2) //promocja pionka
-		{
-		    if(digi(temp.pos1,0)>3)copyGame.board[6][digi(temp.pos1,1)] = '#';
-		    else copyGame.board[1][digi(temp.pos1,1)] = '#';
-            if(digi(temp.pos1,0) == 0 || digi(temp.pos1,0 == 7)) // na hetmana
-            {
-                if(color) copyGame.board[0][digi(temp.pos2,1)] = 'Q'; // biale
-                else copyGame.board[7][digi(temp.pos1,1)] = 'q'; // czarne
-            }
-            else if(digi(temp.pos1,0) == 1 || digi(temp.pos1,0 == 6)) // na skoczka
-            {
-                if(color) copyGame.board[0][digi(temp.pos2,1)] = 'N'; // biale
-                else copyGame.board[7][digi(temp.pos1,1)] = 'n'; // czarne
-            }
-            else if(digi(temp.pos1,0) == 2 || digi(temp.pos1,0 == 5)) // na gonca
-            {
-                if(color) copyGame.board[0][digi(temp.pos2,1)] = 'B'; // biale
-                else copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] = 'b'; // czarne
-            }
-            else if(digi(temp.pos1,0) == 3 || digi(temp.pos1,0 == 4)) // na wieze
-            {
-                if(color) copyGame.board[0][digi(temp.pos2,1)] = 'R'; // biale
-                else copyGame.board[7][digi(temp.pos1,1)] = 'r'; // czarne
-            }
-		}
-		else if(digi(temp.pos1,1)-digi(temp.pos2,1)==-2 && 
-		(copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'K' || copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'k'))//roszada krotka
-        {
-            if(color) // biale
-            {
-                copyGame.board[7][digi(temp.pos2,1)] = 'K';
-                copyGame.board[7][digi(temp.pos2,1)-1] = 'R';
-                copyGame.board[7][7]='#'; // czysci pole na ktorym stal krol
-                copyGame.board[7][4]='#'; // czysci pole na ktorym stala wieza
-				copyGame.movedWhiteCastle[1]=1;
-            }
-            else // czarne
-            {
-                copyGame.board[1][digi(temp.pos2,1)] = 'k';
-                copyGame.board[1][digi(temp.pos2,1)-1] = 'r';
-                copyGame.board[1][7]='#';
-                copyGame.board[1][4]='#';
-				copyGame.movedBlackCastle[1]=1;
-            }
-        }
-        else if(digi(temp.pos1,1)-digi(temp.pos2,1)==2 && 
-		(copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'K' || copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'k'))//roszada dluga
-        {
-            if(color) // biale
-            {
-                copyGame.board[7][digi(temp.pos2,1)] = 'K';
-                copyGame.board[7][digi(temp.pos2,1)+1] = 'R';
-                copyGame.board[7][0]='#';
-                copyGame.board[7][4]='#';
-				copyGame.movedWhiteCastle[1]=1;
-            }
-            else // czarne
-            {
-                copyGame.board[0][digi(temp.pos2,1)] = 'k';
-                copyGame.board[0][digi(temp.pos2,1)+1] = 'r';
-                copyGame.board[0][0]='#';
-                copyGame.board[0][4]='#';
-				copyGame.movedBlackCastle[1]=1;
-            }
-        }
-        else if((copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'P' || 
-		copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] == 'p') 
-		&& copyGame.board[digi(temp.pos2,0)][digi(temp.pos2,1)] == '#' && digi(temp.pos1,1)!=digi(temp.pos2,1)) // bicie w przelocie - rozpoznanie bicia w przelocie jest wtedy gdy na pos 2 jest # (puste)
-        {
-            copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] = '#'; // czysci pos1
-            copyGame.board[digi(temp.pos1,0)][digi(temp.pos2,1)] = '#'; // juz wiadomo ze to bicie w przelocie wiec usuwa zbijanego pionka
-            if(color) copyGame.board[digi(temp.pos2,0)][digi(temp.pos2,1)] = 'P';// bialy bije
-            else copyGame.board[digi(temp.pos2,0)][digi(temp.pos2,1)] = 'p';// czarne
-        }
-		else // stadardowy ruch
-        {
-            copyGame.board[digi(temp.pos2,0)][digi(temp.pos2,1)] = copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)];
-            copyGame.board[digi(temp.pos1,0)][digi(temp.pos1,1)] = '#';
-			if(temp.pos1==0 && copyGame.movedBlackCastle[0]==0 && brd(temp.pos1,copyGame.board)=='r')copyGame.movedBlackCastle[0]=1;//odbieranie praw do roszady
-			else if(temp.pos1==7 && copyGame.movedBlackCastle[2]==0 && brd(temp.pos1,copyGame.board)=='r')copyGame.movedBlackCastle[2]=1;
-			else if(temp.pos1==4 && copyGame.movedBlackCastle[1]==0 && brd(temp.pos1,copyGame.board)=='k')copyGame.movedBlackCastle[1]=1;
-			else if(temp.pos1==70 && copyGame.movedWhiteCastle[0]==0 && brd(temp.pos1,copyGame.board)=='R')copyGame.movedWhiteCastle[0]=1;
-			else if(temp.pos1==77 && copyGame.movedWhiteCastle[2]==0 && brd(temp.pos1,copyGame.board)=='R')copyGame.movedWhiteCastle[2]=1;
-			else if(temp.pos1==74 && copyGame.movedWhiteCastle[1]==0 && brd(temp.pos1,copyGame.board)=='K')copyGame.movedWhiteCastle[1]=1;
-			else if(brd(temp.pos1,copyGame.board)=='p' && abs(digi(temp.pos1,0)-digi(temp.pos2,0))==2)copyGame.movedBlackPawns=digi(temp.pos1,1);//pionki ruszają się o 2 pola
-			else if(brd(temp.pos1,copyGame.board)=='P' && abs(digi(temp.pos1,0)-digi(temp.pos2,0))==2)copyGame.movedWhitePawns=digi(temp.pos1,1);//pionki ruszają się o 2 pola
-        }
+		copyGame=moveMaker(copyGame,temp);
         element *head2 = malloc(sizeof(element));
 	    head2 = generate(copyGame,!color);
-		//showL(head2->nastepny);
 		if(head2->nastepny==NULL)//nie ma ruchow w pozycji
 	        {
-				//printf("%d ",d);
 	            if(isCheck(copyGame.board,!color))//jest mat
 	            {
 					best.x=temp;
 	                if(color)//biale matuja czarnego
 	                {
 						best.value=1000.0;
-					
 	                }//czarne matuja bialego
 					else{
 						best.value=-1000.0;
@@ -200,115 +105,15 @@ bestReturn engine(set game,int color,int d)//d glebokosc
 	    for(;head2;head2=head2->nastepny)
 	    {
             move temp2=head2->ruch;
-			set copyGame2=copyGame;
-            //printf("%d %d\n",temp.pos1,temp.pos2);
-            //char rev=copyGame2.board[digi(temp2.pos2,0)][digi(temp2.pos2,1)];
-            if(temp2.pos1 == temp2.pos2) //promocja pionka
-		{
-		    if(digi(temp2.pos1,0)>3)copyGame2.board[6][digi(temp2.pos1,1)] = '#';
-		    else copyGame2.board[1][digi(temp2.pos1,1)] = '#';
-            if(digi(temp2.pos1,0) == 0 || digi(temp2.pos1,0 == 7)) // na hetmana
-            {
-                if(color) copyGame2.board[0][digi(temp2.pos2,1)] = 'Q'; // biale
-                else copyGame2.board[7][digi(temp2.pos1,1)] = 'q'; // czarne
-            }
-            else if(digi(temp2.pos1,0) == 1 || digi(temp2.pos1,0 == 6)) // na skoczka
-            {
-                if(color) copyGame2.board[0][digi(temp2.pos2,1)] = 'N'; // biale
-                else copyGame2.board[7][digi(temp2.pos1,1)] = 'n'; // czarne
-            }
-            else if(digi(temp2.pos1,0) == 2 || digi(temp2.pos1,0 == 5)) // na gonca
-            {
-                if(color) copyGame2.board[0][digi(temp2.pos2,1)] = 'B'; // biale
-                else copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] = 'b'; // czarne
-            }
-            else if(digi(temp2.pos1,0) == 3 || digi(temp2.pos1,0 == 4)) // na wieze
-            {
-                if(color) copyGame2.board[0][digi(temp2.pos2,1)] = 'R'; // biale
-                else copyGame2.board[7][digi(temp2.pos1,1)] = 'r'; // czarne
-            }
-		}
-		else if(digi(temp2.pos1,1)-digi(temp2.pos2,1)==-2 && 
-		(copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'K' || copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'k'))//roszada krotka
-        {
-            if(color) // biale
-            {
-                copyGame2.board[7][digi(temp2.pos2,1)] = 'K';
-                copyGame2.board[7][digi(temp2.pos2,1)-1] = 'R';
-                copyGame2.board[7][7]='#'; // czysci pole na ktorym stal krol
-                copyGame2.board[7][4]='#'; // czysci pole na ktorym stala wieza
-				copyGame2.movedWhiteCastle[1]=1;
-            }
-            else // czarne
-            {
-                copyGame2.board[1][digi(temp2.pos2,1)] = 'k';
-                copyGame2.board[1][digi(temp2.pos2,1)-1] = 'r';
-                copyGame2.board[1][7]='#';
-                copyGame2.board[1][4]='#';
-				copyGame2.movedBlackCastle[1]=1;
-            }
-        }
-        else if(digi(temp2.pos1,1)-digi(temp2.pos2,1)==2 && 
-		(copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'K' || copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'k'))//roszada dluga
-        {
-            if(color) // biale
-            {
-                copyGame2.board[7][digi(temp2.pos2,1)] = 'K';
-                copyGame2.board[7][digi(temp2.pos2,1)+1] = 'R';
-                copyGame2.board[7][0]='#';
-                copyGame2.board[7][4]='#';
-				copyGame2.movedWhiteCastle[1]=1;
-            }
-            else // czarne
-            {
-                copyGame2.board[0][digi(temp2.pos2,1)] = 'k';
-                copyGame2.board[0][digi(temp2.pos2,1)+1] = 'r';
-                copyGame2.board[0][0]='#';
-                copyGame2.board[0][4]='#';
-				copyGame2.movedBlackCastle[1]=1;
-            }
-        }
-        else if((copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'P' || 
-		copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] == 'p') 
-		&& copyGame2.board[digi(temp2.pos2,0)][digi(temp2.pos2,1)] == '#') // bicie w przelocie - rozpoznanie bicia w przelocie jest wtedy gdy na pos 2 jest # (puste)
-        {
-            copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] = '#'; // czysci pos1
-            copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos2,1)] = '#'; // juz wiadomo ze to bicie w przelocie wiec usuwa zbijanego pionka
-            if(color) copyGame2.board[digi(temp2.pos2,0)][digi(temp2.pos2,1)] = 'P';// bialy bije
-            else copyGame2.board[digi(temp2.pos2,0)][digi(temp2.pos2,1)] = 'p';// czarne
-        }
-		else // stadardowy ruch
-        {
-            copyGame2.board[digi(temp2.pos2,0)][digi(temp2.pos2,1)] = copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)];
-            copyGame2.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] = '#';
-			if(temp2.pos1==0 && copyGame2.movedBlackCastle[0]==0 && brd(temp2.pos1,copyGame2.board)=='r')copyGame2.movedBlackCastle[0]=1;//odbieranie praw do roszady
-			else if(temp2.pos1==7 && copyGame2.movedBlackCastle[2]==0 && brd(temp2.pos1,copyGame2.board)=='r')copyGame2.movedBlackCastle[2]=1;
-			else if(temp2.pos1==4 && copyGame2.movedBlackCastle[1]==0 && brd(temp2.pos1,copyGame2.board)=='k')copyGame2.movedBlackCastle[1]=1;
-			else if(temp2.pos1==70 && copyGame2.movedWhiteCastle[0]==0 && brd(temp2.pos1,copyGame2.board)=='R')copyGame2.movedWhiteCastle[0]=1;
-			else if(temp2.pos1==77 && copyGame2.movedWhiteCastle[2]==0 && brd(temp2.pos1,copyGame2.board)=='R')copyGame2.movedWhiteCastle[2]=1;
-			else if(temp2.pos1==74 && copyGame2.movedWhiteCastle[1]==0 && brd(temp2.pos1,copyGame2.board)=='K')copyGame2.movedWhiteCastle[1]=1;
-			else if(brd(temp2.pos1,copyGame2.board)=='p' && abs(digi(temp2.pos1,0)-digi(temp2.pos2,0))==2)copyGame2.movedBlackPawns=digi(temp2.pos1,1);//pionki ruszają się o 2 pola
-			else if(brd(temp2.pos1,copyGame2.board)=='P' && abs(digi(temp2.pos1,0)-digi(temp2.pos2,0))==2)copyGame2.movedWhitePawns=digi(temp2.pos1,1);//pionki ruszają się o 2 pola
-        }
-            //drawBoard(copyGame2.board);
+			set copyGame2=moveMaker(copyGame,temp2);
             if(d)
             {
                 bestReturn t=engine(copyGame2,color,d-1);
-				/*if(t.x.pos1==1000)
+                if(!counter)
 				{
-					current.x=temp;
-					current.value=1000;
+					t.x=temp;
+					current=t;
 				}
-				else if(t.x.pos1==-1000)
-				{
-					current.x=temp;
-					current.value=-1000;
-				}
-				else if(t.x.pos1==100)
-				{
-					current.x=temp;
-					current.value=0;
-				}*/
                 if(current.value<t.value && !color)
                 {
                     current.value=t.value;
@@ -317,15 +122,11 @@ bestReturn engine(set game,int color,int d)//d glebokosc
                 {
                     current.value=t.value;
                 }
-				if(!counter)
-				{
-					t.x=temp;
-					current=t;
-				}
             }
             else
             {
-                double tempValue=evaluate(copyGame2.board);
+                double tempValue=evaluate(copyGame2);
+                if(!counter)current.value=tempValue;
                 if(current.value<tempValue && !color)
                 {
                     current.value=tempValue;
@@ -334,34 +135,17 @@ bestReturn engine(set game,int color,int d)//d glebokosc
                 {
                     current.value=tempValue;
                 }
-				if(!counter)current.value=tempValue;
 			}
-			//printf("%f \n",current.value);
 			counter++;
-		//copy.board[digi(temp2.pos1,0)][digi(temp2.pos1,1)] = game.board[digi(temp2.pos2,0)][digi(temp2.pos2,1)];//cofniecie posuniecia
-		//game.board[digi(temp2.pos2,0)][digi(temp2.pos2,1)] = rev;
 		}
-		//game.board[digi(temp.pos1,0)][digi(temp.pos1,1)] = game.board[digi(temp.pos2,0)][digi(temp.pos2,1)];//cofniecie posuniecia
-		//game.board[digi(temp.pos2,0)][digi(temp.pos2,1)] = rev1;
-	
-	   //if(d)printf("## %d %d %f\n",current.x.pos1,current.x.pos2,current.value);
+       if(!counter2)best=current;
 	   if(current.value>best.value && color) best=current;
        else if(current.value<best.value && !color) best=current;
        zniszcz(head2);
+       counter2++;
 	}
 	zniszcz(head);
-	//printf("##%d %d %f\n",best.x.pos1,best.x.pos2,best.value);
 	return best;
-}
-int len(element *head)
-{
-	int d=0;
-	while(head->nastepny)
-	{
-		head=head->nastepny;
-		d++;
-	}
-	return d;
 }
 move typeMove2(set game)
 {
@@ -393,22 +177,7 @@ move typeMove2(set game)
 				if(promotion[0]=='q'||promotion[0]=='n'||promotion[0]=='r'||promotion[0]=='b')isInputOk2=1;
 				j++;
 			}while(!isInputOk2);
-			conv.pos1=conv.pos2;
-			if(promotion[0]=='n')
-			{
-				conv.pos1-=10;
-				conv.pos2-=10;
-			}
-			else if(promotion[0]=='b')
-			{
-				conv.pos1-=20;
-				conv.pos2-=20;
-			}
-			else if(promotion[0]=='r')
-			{
-				conv.pos1-=30;
-				conv.pos2-=30;
-			}
+			conv.promotion=promotion[0];
 		}
 		else if(digi(conv.pos2,0)==0 && brd(conv.pos1,game.board)=='P')
 		{
@@ -419,22 +188,7 @@ move typeMove2(set game)
 				if(promotion[0]=='Q'||promotion[0]=='N'||promotion[0]=='R'||promotion[0]=='B')isInputOk2=1;
 				j++;
 			}while(!isInputOk2);
-			conv.pos1=conv.pos2;
-			if(promotion[0]=='N')
-			{
-				conv.pos1+=10;
-				conv.pos2+=10;
-			}
-			else if(promotion[0]=='B')
-			{
-				conv.pos1+=20;
-				conv.pos2+=20;
-			}
-			else if(promotion[0]=='R')
-			{
-				conv.pos1+=30;
-				conv.pos2+=30;
-			}
+			conv.promotion=promotion[0];
 		}
 		do{
 			if(moveOptions->ruch.pos1==conv.pos1 && moveOptions->ruch.pos2==conv.pos2)isInputOk=1;
@@ -570,98 +324,7 @@ move typeMove(set game) //trzeba jeszcze dorobiæ ¿eby pobiera³o info z funkcj
     moveOptions=First;
     return conv;
 }
-set moveMaker(set game, int color, move ruch)
-{
-    // WYKONANIE RUCHOW
-		if(ruch.pos1 == ruch.pos2) //promocja pionka
-		{
-			if(digi(ruch.pos1,0)>3)game.board[6][digi(ruch.pos1,1)] = '#';
-		    else game.board[1][digi(ruch.pos1,1)] = '#';
-            if(digi(ruch.pos1,0) == 0 || digi(ruch.pos1,0 == 7)) // na hetmana
-            {
-                if(color) game.board[0][digi(ruch.pos2,1)] = 'Q'; // biale
-                else game.board[7][digi(ruch.pos1,1)] = 'q'; // czarne
-            }
-            else if(digi(ruch.pos1,0) == 1 || digi(ruch.pos1,0 == 6)) // na skoczka
-            {
-                if(color) game.board[0][digi(ruch.pos2,1)] = 'N'; // biale
-                else game.board[7][digi(ruch.pos1,1)] = 'n'; // czarne
-            }
-            else if(digi(ruch.pos1,0) == 2 || digi(ruch.pos1,0 == 5)) // na gonca
-            {
-                if(color) game.board[0][digi(ruch.pos2,1)] = 'B'; // biale
-                else game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] = 'b'; // czarne
-            }
-            else if(digi(ruch.pos1,0) == 3 || digi(ruch.pos1,0 == 4)) // na wieze
-            {
-                if(color) game.board[0][digi(ruch.pos2,1)] = 'R'; // biale
-                else game.board[7][digi(ruch.pos1,1)] = 'r'; // czarne
-            }
-		}
-		else if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==-2 &&
-		(game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'K' || game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'k'))//roszada krotka
-        {
-            if(color) // biale
-            {
-                game.board[7][digi(ruch.pos2,1)] = 'K';
-                game.board[7][digi(ruch.pos2,1)-1] = 'R';
-                game.board[7][7]='#'; // czysci pole na ktorym stal krol
-                game.board[7][4]='#'; // czysci pole na ktorym stala wieza
-				game.movedWhiteCastle[1]=1;
-            }
-            else // czarne
-            {
-                game.board[1][digi(ruch.pos2,1)] = 'k';
-                game.board[1][digi(ruch.pos2,1)-1] = 'r';
-                game.board[1][7]='#';
-                game.board[1][4]='#';
-				game.movedBlackCastle[1]=1;
-            }
-        }
-        else if(digi(ruch.pos1,1)-digi(ruch.pos2,1)==2 &&
-		(game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'K' || game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'k'))//roszada dluga
-        {
-            if(color) // biale
-            {
-                game.board[7][digi(ruch.pos2,1)] = 'K';
-                game.board[7][digi(ruch.pos2,1)+1] = 'R';
-                game.board[7][0]='#';
-                game.board[7][4]='#';
-				game.movedWhiteCastle[1]=1;
-            }
-            else // czarne
-            {
-                game.board[0][digi(ruch.pos2,1)] = 'k';
-                game.board[0][digi(ruch.pos2,1)+1] = 'r';
-                game.board[0][0]='#';
-                game.board[0][4]='#';
-				game.movedBlackCastle[1]=1;
-            }
-        }
-        else if((game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'P' ||
-		game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] == 'p')
-		&& game.board[digi(ruch.pos2,0)][digi(ruch.pos2,1)] == '#' && digi(ruch.pos1,1)!=digi(ruch.pos2,1)) // bicie w przelocie - rozpoznanie bicia w przelocie jest wtedy gdy na pos 2 jest # (puste)
-        {
-            game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] = '#'; // czysci pos1
-            game.board[digi(ruch.pos1,0)][digi(ruch.pos2,1)] = '#'; // juz wiadomo ze to bicie w przelocie wiec usuwa zbijanego pionka
-            if(color) game.board[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = 'P';// bialy bije
-            else game.board[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = 'p';// czarne
-        }
-		else // stadardowy ruch
-        {
-            game.board[digi(ruch.pos2,0)][digi(ruch.pos2,1)] = game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)];
-            game.board[digi(ruch.pos1,0)][digi(ruch.pos1,1)] = '#';
-			if(ruch.pos1==0 && game.movedBlackCastle[0]==0 && brd(ruch.pos1,game.board)=='r')game.movedBlackCastle[0]=1;//odbieranie praw do roszady
-			else if(ruch.pos1==7 && game.movedBlackCastle[2]==0 && brd(ruch.pos1,game.board)=='r')game.movedBlackCastle[2]=1;
-			else if(ruch.pos1==4 && game.movedBlackCastle[1]==0 && brd(ruch.pos1,game.board)=='k')game.movedBlackCastle[1]=1;
-			else if(ruch.pos1==70 && game.movedWhiteCastle[0]==0 && brd(ruch.pos1,game.board)=='R')game.movedWhiteCastle[0]=1;
-			else if(ruch.pos1==77 && game.movedWhiteCastle[2]==0 && brd(ruch.pos1,game.board)=='R')game.movedWhiteCastle[2]=1;
-			else if(ruch.pos1==74 && game.movedWhiteCastle[1]==0 && brd(ruch.pos1,game.board)=='K')game.movedWhiteCastle[1]=1;
-			else if(brd(ruch.pos1,game.board)=='p' && abs(digi(ruch.pos1,0)-digi(ruch.pos2,0))==2)game.movedBlackPawns=digi(ruch.pos1,1);//pionki ruszają się o 2 pola
-			else if(brd(ruch.pos1,game.board)=='P' && abs(digi(ruch.pos1,0)-digi(ruch.pos2,0))==2)game.movedWhitePawns=digi(ruch.pos1,1);//pionki ruszają się o 2 pola
-        }
-        return game;
-}
+
 void main()
 {
 	char board[8][8] = { "rnbqkbnr","pppppppp","########","########","########","########","PPPPPPPP","RNBQKBNR"};
@@ -670,20 +333,21 @@ void main()
 	drawBoard(game.board);
 	move x={.pos1=32,.pos2=21};
 	bestReturn y=engine(game,0,1);
+	bestReturn b=engine(game,0,1);
 	//printf(" %d %d %f\n",y.x.pos1,y.x.pos2,y.value);
 	element *head;
 	while(1)
 	{
 		head=generate(game,0);
 		if(!head->nastepny)break;
-		y=engine(game,0,1);
-		game = moveMaker(game,0,y.x);
+        b=engine(game,0,1);
+		game = moveMaker(game,b.x);
 		drawBoard(game.board);
 		head=generate(game,1);
 		if(!head->nastepny)break;
-		y.x=typeMove(game);
+		y.x=typeMove2(game);
 		//y=engine(game,1,1);
-		game = moveMaker(game,1,y.x);
+		game = moveMaker(game,y.x);
 		drawBoard(game.board);
 	}
 }
